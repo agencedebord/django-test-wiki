@@ -1,0 +1,794 @@
+---
+domain: django
+confidence: llm-analyzed
+last_updated: 2026-04-03
+related_files:
+  - django/templatetags/l10n.py
+  - django/templatetags/tz.py
+  - django/templatetags/cache.py
+  - django/templatetags/static.py
+  - django/templatetags/i18n.py
+  - django/middleware/clickjacking.py
+  - django/middleware/gzip.py
+  - django/middleware/csrf.py
+  - django/middleware/security.py
+  - django/middleware/cache.py
+  - django/middleware/csp.py
+  - django/middleware/common.py
+  - django/middleware/http.py
+  - django/middleware/locale.py
+  - django/tasks/signals.py
+  - django/tasks/checks.py
+  - django/tasks/backends/immediate.py
+  - django/tasks/backends/dummy.py
+  - django/tasks/backends/base.py
+  - django/tasks/__init__.py
+  - django/tasks/exceptions.py
+  - django/tasks/base.py
+  - django/forms/models.py
+  - django/forms/fields.py
+  - django/forms/jinja2/django/forms/label.html
+  - django/forms/jinja2/django/forms/formsets/table.html
+  - django/forms/jinja2/django/forms/formsets/p.html
+  - django/forms/jinja2/django/forms/formsets/div.html
+  - django/forms/jinja2/django/forms/formsets/ul.html
+  - django/forms/jinja2/django/forms/table.html
+  - django/forms/jinja2/django/forms/p.html
+  - django/forms/jinja2/django/forms/div.html
+  - django/forms/jinja2/django/forms/field.html
+  - django/forms/jinja2/django/forms/errors/list/default.html
+  - django/forms/jinja2/django/forms/errors/list/text.txt
+  - django/forms/jinja2/django/forms/errors/list/ul.html
+  - django/forms/jinja2/django/forms/errors/dict/default.html
+  - django/forms/jinja2/django/forms/errors/dict/text.txt
+  - django/forms/jinja2/django/forms/errors/dict/ul.html
+  - django/forms/jinja2/django/forms/ul.html
+  - django/forms/jinja2/django/forms/attrs.html
+  - django/forms/jinja2/django/forms/widgets/tel.html
+  - django/forms/jinja2/django/forms/widgets/select.html
+  - django/forms/jinja2/django/forms/widgets/radio_option.html
+  - django/forms/jinja2/django/forms/widgets/text.html
+  - django/forms/jinja2/django/forms/widgets/splitdatetime.html
+  - django/forms/jinja2/django/forms/widgets/splithiddendatetime.html
+  - django/forms/jinja2/django/forms/widgets/email.html
+  - django/forms/jinja2/django/forms/widgets/textarea.html
+  - django/forms/jinja2/django/forms/widgets/radio.html
+  - django/forms/jinja2/django/forms/widgets/multiple_hidden.html
+  - django/forms/jinja2/django/forms/widgets/select_date.html
+  - django/forms/jinja2/django/forms/widgets/url.html
+  - django/forms/jinja2/django/forms/widgets/time.html
+  - django/forms/jinja2/django/forms/widgets/clearable_file_input.html
+  - django/forms/jinja2/django/forms/widgets/checkbox.html
+  - django/forms/jinja2/django/forms/widgets/number.html
+  - django/forms/jinja2/django/forms/widgets/checkbox_option.html
+  - django/forms/jinja2/django/forms/widgets/file.html
+  - django/forms/jinja2/django/forms/widgets/multiwidget.html
+  - django/forms/jinja2/django/forms/widgets/select_option.html
+  - django/forms/jinja2/django/forms/widgets/input.html
+  - django/forms/jinja2/django/forms/widgets/search.html
+  - django/forms/jinja2/django/forms/widgets/multiple_input.html
+  - django/forms/jinja2/django/forms/widgets/checkbox_select.html
+  - django/forms/jinja2/django/forms/widgets/hidden.html
+  - django/forms/jinja2/django/forms/widgets/input_option.html
+  - django/forms/jinja2/django/forms/widgets/attrs.html
+  - django/forms/jinja2/django/forms/widgets/datetime.html
+  - django/forms/jinja2/django/forms/widgets/date.html
+  - django/forms/jinja2/django/forms/widgets/color.html
+  - django/forms/jinja2/django/forms/widgets/password.html
+  - django/forms/boundfield.py
+  - django/forms/renderers.py
+  - django/forms/widgets.py
+  - django/forms/formsets.py
+  - django/forms/forms.py
+  - django/forms/utils.py
+  - django/core/signing.py
+  - django/core/signals.py
+  - django/core/cache/backends/memcached.py
+  - django/core/cache/backends/db.py
+  - django/core/cache/backends/filebased.py
+  - django/core/cache/backends/redis.py
+  - django/core/cache/backends/dummy.py
+  - django/core/cache/backends/base.py
+  - django/core/cache/backends/locmem.py
+  - django/core/cache/__init__.py
+  - django/core/cache/utils.py
+  - django/core/mail/backends/console.py
+  - django/core/mail/backends/filebased.py
+  - django/core/mail/backends/smtp.py
+  - django/core/mail/backends/dummy.py
+  - django/core/mail/backends/base.py
+  - django/core/mail/backends/locmem.py
+  - django/core/mail/__init__.py
+  - django/core/mail/message.py
+  - django/core/mail/utils.py
+  - django/core/checks/compatibility/django_4_0.py
+  - django/core/checks/files.py
+  - django/core/checks/caches.py
+  - django/core/checks/security/sessions.py
+  - django/core/checks/security/csrf.py
+  - django/core/checks/security/base.py
+  - django/core/checks/registry.py
+  - django/core/checks/model_checks.py
+  - django/core/checks/database.py
+  - django/core/checks/__init__.py
+  - django/core/checks/templates.py
+  - django/core/checks/translation.py
+  - django/core/checks/async_checks.py
+  - django/core/checks/messages.py
+  - django/core/checks/urls.py
+  - django/core/checks/commands.py
+  - django/core/validators.py
+  - django/core/asgi.py
+  - django/core/management/color.py
+  - django/core/management/__init__.py
+  - django/core/management/templates.py
+  - django/core/management/utils.py
+  - django/core/management/commands/createcachetable.py
+  - django/core/management/commands/inspectdb.py
+  - django/core/management/commands/squashmigrations.py
+  - django/core/management/commands/check.py
+  - django/core/management/commands/startapp.py
+  - django/core/management/commands/optimizemigration.py
+  - django/core/management/commands/sqlmigrate.py
+  - django/core/management/commands/makemigrations.py
+  - django/core/management/commands/sqlflush.py
+  - django/core/management/commands/makemessages.py
+  - django/core/management/commands/shell.py
+  - django/core/management/commands/dumpdata.py
+  - django/core/management/commands/test.py
+  - django/core/management/commands/flush.py
+  - django/core/management/commands/loaddata.py
+  - django/core/management/commands/runserver.py
+  - django/core/management/commands/showmigrations.py
+  - django/core/management/commands/sqlsequencereset.py
+  - django/core/management/commands/dbshell.py
+  - django/core/management/commands/sendtestemail.py
+  - django/core/management/commands/startproject.py
+  - django/core/management/commands/migrate.py
+  - django/core/management/commands/compilemessages.py
+  - django/core/management/commands/diffsettings.py
+  - django/core/management/commands/testserver.py
+  - django/core/management/sql.py
+  - django/core/management/base.py
+  - django/core/serializers/pyyaml.py
+  - django/core/serializers/__init__.py
+  - django/core/serializers/xml_serializer.py
+  - django/core/serializers/jsonl.py
+  - django/core/serializers/python.py
+  - django/core/serializers/json.py
+  - django/core/serializers/base.py
+  - django/core/paginator.py
+  - django/core/files/locks.py
+  - django/core/files/storage/mixins.py
+  - django/core/files/storage/handler.py
+  - django/core/files/storage/memory.py
+  - django/core/files/storage/filesystem.py
+  - django/core/files/storage/__init__.py
+  - django/core/files/storage/base.py
+  - django/core/files/uploadhandler.py
+  - django/core/files/utils.py
+  - django/core/files/uploadedfile.py
+  - django/core/files/temp.py
+  - django/core/files/images.py
+  - django/core/files/move.py
+  - django/core/files/base.py
+  - django/core/exceptions.py
+  - django/core/handlers/exception.py
+  - django/core/handlers/asgi.py
+  - django/core/handlers/base.py
+  - django/core/handlers/wsgi.py
+  - django/core/servers/basehttp.py
+  - django/core/wsgi.py
+  - django/test/signals.py
+  - django/test/runner.py
+  - django/test/client.py
+  - django/test/html.py
+  - django/test/__init__.py
+  - django/test/selenium.py
+  - django/test/utils.py
+  - django/test/testcases.py
+  - django/shortcuts.py
+  - django/dispatch/dispatcher.py
+  - django/dispatch/license.txt
+  - django/template/library.py
+  - django/template/backends/django.py
+  - django/template/backends/jinja2.py
+  - django/template/backends/utils.py
+  - django/template/backends/dummy.py
+  - django/template/backends/base.py
+  - django/template/__init__.py
+  - django/template/response.py
+  - django/template/smartif.py
+  - django/template/context_processors.py
+  - django/template/defaultfilters.py
+  - django/template/engine.py
+  - django/template/context.py
+  - django/template/utils.py
+  - django/template/loader.py
+  - django/template/loader_tags.py
+  - django/template/exceptions.py
+  - django/template/autoreload.py
+  - django/template/loaders/filesystem.py
+  - django/template/loaders/cached.py
+  - django/template/loaders/app_directories.py
+  - django/template/loaders/base.py
+  - django/template/loaders/locmem.py
+  - django/template/base.py
+  - django/template/defaulttags.py
+  - django/__init__.py
+  - django/utils/_os.py
+  - django/utils/termcolors.py
+  - django/utils/tree.py
+  - django/utils/hashable.py
+  - django/utils/version.py
+  - django/utils/encoding.py
+  - django/utils/translation/trans_real.py
+  - django/utils/translation/reloader.py
+  - django/utils/translation/trans_null.py
+  - django/utils/translation/__init__.py
+  - django/utils/translation/template.py
+  - django/utils/log.py
+  - django/utils/deprecation.py
+  - django/utils/timesince.py
+  - django/utils/numberformat.py
+  - django/utils/asyncio.py
+  - django/utils/html.py
+  - django/utils/duration.py
+  - django/utils/cache.py
+  - django/utils/csp.py
+  - django/utils/deconstruct.py
+  - django/utils/copy.py
+  - django/utils/connection.py
+  - django/utils/inspect.py
+  - django/utils/functional.py
+  - django/utils/crypto.py
+  - django/utils/lorem_ipsum.py
+  - django/utils/regex_helper.py
+  - django/utils/http.py
+  - django/utils/formats.py
+  - django/utils/text.py
+  - django/utils/archive.py
+  - django/utils/safestring.py
+  - django/utils/dates.py
+  - django/utils/choices.py
+  - django/utils/feedgenerator.py
+  - django/utils/autoreload.py
+  - django/utils/datastructures.py
+  - django/utils/dateformat.py
+  - django/utils/timezone.py
+  - django/utils/ipv6.py
+  - django/utils/json.py
+  - django/utils/module_loading.py
+  - django/utils/dateparse.py
+  - django/utils/xmlutils.py
+  - django/utils/decorators.py
+  - django/contrib/syndication/apps.py
+  - django/contrib/syndication/views.py
+  - django/contrib/messages/constants.py
+  - django/contrib/messages/test.py
+  - django/contrib/messages/apps.py
+  - django/contrib/messages/storage/session.py
+  - django/contrib/messages/storage/cookie.py
+  - django/contrib/messages/storage/fallback.py
+  - django/contrib/messages/storage/base.py
+  - django/contrib/messages/api.py
+  - django/contrib/messages/context_processors.py
+  - django/contrib/messages/utils.py
+  - django/contrib/messages/middleware.py
+  - django/contrib/messages/views.py
+  - django/contrib/auth/templatetags/auth.py
+  - django/contrib/auth/signals.py
+  - django/contrib/auth/mixins.py
+  - django/contrib/auth/password_validation.py
+  - django/contrib/auth/models.py
+  - django/contrib/auth/common-passwords.txt.gz
+  - django/contrib/auth/validators.py
+  - django/contrib/auth/checks.py
+  - django/contrib/auth/management/__init__.py
+  - django/contrib/auth/management/commands/createsuperuser.py
+  - django/contrib/auth/management/commands/changepassword.py
+  - django/contrib/auth/base_user.py
+  - django/contrib/auth/__init__.py
+  - django/contrib/auth/tokens.py
+  - django/contrib/auth/apps.py
+  - django/contrib/auth/forms.py
+  - django/contrib/auth/backends.py
+  - django/contrib/auth/context_processors.py
+  - django/contrib/auth/admin.py
+  - django/contrib/auth/hashers.py
+  - django/contrib/auth/urls.py
+  - django/contrib/auth/handlers/modwsgi.py
+  - django/contrib/auth/middleware.py
+  - django/contrib/auth/views.py
+  - django/contrib/auth/decorators.py
+  - django/contrib/admin/templatetags/admin_list.py
+  - django/contrib/admin/templatetags/log.py
+  - django/contrib/admin/templatetags/admin_filters.py
+  - django/contrib/admin/templatetags/admin_modify.py
+  - django/contrib/admin/templatetags/base.py
+  - django/contrib/admin/templatetags/admin_urls.py
+  - django/contrib/admin/options.py
+  - django/contrib/admin/models.py
+  - django/contrib/admin/checks.py
+  - django/contrib/admin/actions.py
+  - django/contrib/admin/__init__.py
+  - django/contrib/admin/apps.py
+  - django/contrib/admin/widgets.py
+  - django/contrib/admin/forms.py
+  - django/contrib/admin/utils.py
+  - django/contrib/admin/sites.py
+  - django/contrib/admin/exceptions.py
+  - django/contrib/admin/tests.py
+  - django/contrib/admin/views/autocomplete.py
+  - django/contrib/admin/views/main.py
+  - django/contrib/admin/views/decorators.py
+  - django/contrib/admin/helpers.py
+  - django/contrib/admin/filters.py
+  - django/contrib/admin/decorators.py
+  - django/contrib/staticfiles/finders.py
+  - django/contrib/staticfiles/checks.py
+  - django/contrib/staticfiles/management/commands/findstatic.py
+  - django/contrib/staticfiles/management/commands/runserver.py
+  - django/contrib/staticfiles/management/commands/collectstatic.py
+  - django/contrib/staticfiles/handlers.py
+  - django/contrib/staticfiles/apps.py
+  - django/contrib/staticfiles/utils.py
+  - django/contrib/staticfiles/storage.py
+  - django/contrib/staticfiles/testing.py
+  - django/contrib/staticfiles/urls.py
+  - django/contrib/staticfiles/views.py
+  - django/contrib/flatpages/templatetags/flatpages.py
+  - django/contrib/flatpages/models.py
+  - django/contrib/flatpages/apps.py
+  - django/contrib/flatpages/forms.py
+  - django/contrib/flatpages/admin.py
+  - django/contrib/flatpages/urls.py
+  - django/contrib/flatpages/sitemaps.py
+  - django/contrib/flatpages/middleware.py
+  - django/contrib/flatpages/views.py
+  - django/contrib/sites/models.py
+  - django/contrib/sites/shortcuts.py
+  - django/contrib/sites/checks.py
+  - django/contrib/sites/apps.py
+  - django/contrib/sites/admin.py
+  - django/contrib/sites/management.py
+  - django/contrib/sites/requests.py
+  - django/contrib/sites/middleware.py
+  - django/contrib/sites/managers.py
+  - django/contrib/postgres/functions.py
+  - django/contrib/postgres/signals.py
+  - django/contrib/postgres/forms/ranges.py
+  - django/contrib/postgres/forms/array.py
+  - django/contrib/postgres/forms/hstore.py
+  - django/contrib/postgres/jinja2/postgres/widgets/split_array.html
+  - django/contrib/postgres/aggregates/mixins.py
+  - django/contrib/postgres/aggregates/statistics.py
+  - django/contrib/postgres/aggregates/general.py
+  - django/contrib/postgres/validators.py
+  - django/contrib/postgres/serializers.py
+  - django/contrib/postgres/expressions.py
+  - django/contrib/postgres/lookups.py
+  - django/contrib/postgres/apps.py
+  - django/contrib/postgres/operations.py
+  - django/contrib/postgres/indexes.py
+  - django/contrib/postgres/utils.py
+  - django/contrib/postgres/search.py
+  - django/contrib/postgres/fields/citext.py
+  - django/contrib/postgres/fields/ranges.py
+  - django/contrib/postgres/fields/utils.py
+  - django/contrib/postgres/fields/jsonb.py
+  - django/contrib/postgres/fields/array.py
+  - django/contrib/postgres/fields/hstore.py
+  - django/contrib/postgres/constraints.py
+  - django/contrib/redirects/models.py
+  - django/contrib/redirects/apps.py
+  - django/contrib/redirects/admin.py
+  - django/contrib/redirects/middleware.py
+  - django/contrib/sessions/models.py
+  - django/contrib/sessions/backends/signed_cookies.py
+  - django/contrib/sessions/backends/db.py
+  - django/contrib/sessions/backends/cached_db.py
+  - django/contrib/sessions/backends/cache.py
+  - django/contrib/sessions/backends/file.py
+  - django/contrib/sessions/backends/base.py
+  - django/contrib/sessions/serializers.py
+  - django/contrib/sessions/management/commands/clearsessions.py
+  - django/contrib/sessions/apps.py
+  - django/contrib/sessions/exceptions.py
+  - django/contrib/sessions/base_session.py
+  - django/contrib/sessions/middleware.py
+  - django/contrib/sitemaps/__init__.py
+  - django/contrib/sitemaps/apps.py
+  - django/contrib/sitemaps/views.py
+  - django/contrib/humanize/templatetags/humanize.py
+  - django/contrib/humanize/apps.py
+  - django/contrib/contenttypes/models.py
+  - django/contrib/contenttypes/fields.py
+  - django/contrib/contenttypes/checks.py
+  - django/contrib/contenttypes/management/__init__.py
+  - django/contrib/contenttypes/management/commands/remove_stale_contenttypes.py
+  - django/contrib/contenttypes/apps.py
+  - django/contrib/contenttypes/forms.py
+  - django/contrib/contenttypes/admin.py
+  - django/contrib/contenttypes/prefetch.py
+  - django/contrib/contenttypes/views.py
+  - django/contrib/gis/geos/mutable_list.py
+  - django/contrib/gis/geos/error.py
+  - django/contrib/gis/geos/LICENSE
+  - django/contrib/gis/geos/prepared.py
+  - django/contrib/gis/geos/polygon.py
+  - django/contrib/gis/geos/io.py
+  - django/contrib/gis/geos/linestring.py
+  - django/contrib/gis/geos/__init__.py
+  - django/contrib/gis/geos/factory.py
+  - django/contrib/gis/geos/coordseq.py
+  - django/contrib/gis/geos/point.py
+  - django/contrib/gis/geos/prototypes/misc.py
+  - django/contrib/gis/geos/prototypes/predicates.py
+  - django/contrib/gis/geos/prototypes/prepared.py
+  - django/contrib/gis/geos/prototypes/geom.py
+  - django/contrib/gis/geos/prototypes/io.py
+  - django/contrib/gis/geos/prototypes/__init__.py
+  - django/contrib/gis/geos/prototypes/coordseq.py
+  - django/contrib/gis/geos/prototypes/topology.py
+  - django/contrib/gis/geos/prototypes/threadsafe.py
+  - django/contrib/gis/geos/prototypes/errcheck.py
+  - django/contrib/gis/geos/collections.py
+  - django/contrib/gis/geos/geometry.py
+  - django/contrib/gis/geos/libgeos.py
+  - django/contrib/gis/geos/base.py
+  - django/contrib/gis/measure.py
+  - django/contrib/gis/forms/fields.py
+  - django/contrib/gis/forms/widgets.py
+  - django/contrib/gis/gdal/field.py
+  - django/contrib/gis/gdal/srs.py
+  - django/contrib/gis/gdal/error.py
+  - django/contrib/gis/gdal/LICENSE
+  - django/contrib/gis/gdal/geomtype.py
+  - django/contrib/gis/gdal/__init__.py
+  - django/contrib/gis/gdal/feature.py
+  - django/contrib/gis/gdal/datasource.py
+  - django/contrib/gis/gdal/prototypes/srs.py
+  - django/contrib/gis/gdal/prototypes/generation.py
+  - django/contrib/gis/gdal/prototypes/geom.py
+  - django/contrib/gis/gdal/prototypes/ds.py
+  - django/contrib/gis/gdal/prototypes/raster.py
+  - django/contrib/gis/gdal/prototypes/errcheck.py
+  - django/contrib/gis/gdal/layer.py
+  - django/contrib/gis/gdal/raster/band.py
+  - django/contrib/gis/gdal/raster/source.py
+  - django/contrib/gis/gdal/raster/base.py
+  - django/contrib/gis/gdal/raster/const.py
+  - django/contrib/gis/gdal/driver.py
+  - django/contrib/gis/gdal/geometries.py
+  - django/contrib/gis/gdal/base.py
+  - django/contrib/gis/gdal/libgdal.py
+  - django/contrib/gis/gdal/envelope.py
+  - django/contrib/gis/geoip2.py
+  - django/contrib/gis/shortcuts.py
+  - django/contrib/gis/feeds.py
+  - django/contrib/gis/admin/options.py
+  - django/contrib/gis/management/commands/inspectdb.py
+  - django/contrib/gis/management/commands/ogrinspect.py
+  - django/contrib/gis/utils/srs.py
+  - django/contrib/gis/utils/ogrinspect.py
+  - django/contrib/gis/utils/layermapping.py
+  - django/contrib/gis/utils/ogrinfo.py
+  - django/contrib/gis/apps.py
+  - django/contrib/gis/serializers/geojson.py
+  - django/contrib/gis/sitemaps/kml.py
+  - django/contrib/gis/sitemaps/views.py
+  - django/contrib/gis/geometry.py
+  - django/contrib/gis/db/backends/oracle/models.py
+  - django/contrib/gis/db/backends/oracle/adapter.py
+  - django/contrib/gis/db/backends/oracle/features.py
+  - django/contrib/gis/db/backends/oracle/operations.py
+  - django/contrib/gis/db/backends/oracle/introspection.py
+  - django/contrib/gis/db/backends/oracle/base.py
+  - django/contrib/gis/db/backends/oracle/schema.py
+  - django/contrib/gis/db/backends/postgis/models.py
+  - django/contrib/gis/db/backends/postgis/adapter.py
+  - django/contrib/gis/db/backends/postgis/pgraster.py
+  - django/contrib/gis/db/backends/postgis/features.py
+  - django/contrib/gis/db/backends/postgis/operations.py
+  - django/contrib/gis/db/backends/postgis/introspection.py
+  - django/contrib/gis/db/backends/postgis/base.py
+  - django/contrib/gis/db/backends/postgis/const.py
+  - django/contrib/gis/db/backends/postgis/schema.py
+  - django/contrib/gis/db/backends/utils.py
+  - django/contrib/gis/db/backends/mysql/features.py
+  - django/contrib/gis/db/backends/mysql/operations.py
+  - django/contrib/gis/db/backends/mysql/introspection.py
+  - django/contrib/gis/db/backends/mysql/base.py
+  - django/contrib/gis/db/backends/mysql/schema.py
+  - django/contrib/gis/db/backends/spatialite/models.py
+  - django/contrib/gis/db/backends/spatialite/adapter.py
+  - django/contrib/gis/db/backends/spatialite/client.py
+  - django/contrib/gis/db/backends/spatialite/features.py
+  - django/contrib/gis/db/backends/spatialite/operations.py
+  - django/contrib/gis/db/backends/spatialite/introspection.py
+  - django/contrib/gis/db/backends/spatialite/base.py
+  - django/contrib/gis/db/backends/spatialite/schema.py
+  - django/contrib/gis/db/backends/base/models.py
+  - django/contrib/gis/db/backends/base/adapter.py
+  - django/contrib/gis/db/backends/base/features.py
+  - django/contrib/gis/db/backends/base/operations.py
+  - django/contrib/gis/db/models/functions.py
+  - django/contrib/gis/db/models/fields.py
+  - django/contrib/gis/db/models/proxy.py
+  - django/contrib/gis/db/models/__init__.py
+  - django/contrib/gis/db/models/lookups.py
+  - django/contrib/gis/db/models/aggregates.py
+  - django/contrib/gis/db/models/sql/conversion.py
+  - django/contrib/gis/ptr.py
+  - django/contrib/gis/views.py
+  - django/contrib/admindocs/apps.py
+  - django/contrib/admindocs/utils.py
+  - django/contrib/admindocs/urls.py
+  - django/contrib/admindocs/middleware.py
+  - django/contrib/admindocs/views.py
+  - django/http/multipartparser.py
+  - django/http/request.py
+  - django/http/__init__.py
+  - django/http/response.py
+  - django/http/cookie.py
+  - django/urls/resolvers.py
+  - django/urls/conf.py
+  - django/urls/__init__.py
+  - django/urls/utils.py
+  - django/urls/exceptions.py
+  - django/urls/converters.py
+  - django/urls/base.py
+  - django/db/transaction.py
+  - django/db/backends/postgresql/compiler.py
+  - django/db/backends/postgresql/creation.py
+  - django/db/backends/postgresql/client.py
+  - django/db/backends/postgresql/features.py
+  - django/db/backends/postgresql/operations.py
+  - django/db/backends/postgresql/introspection.py
+  - django/db/backends/postgresql/psycopg_any.py
+  - django/db/backends/postgresql/base.py
+  - django/db/backends/postgresql/schema.py
+  - django/db/backends/signals.py
+  - django/db/backends/dummy/features.py
+  - django/db/backends/dummy/base.py
+  - django/db/backends/oracle/functions.py
+  - django/db/backends/oracle/creation.py
+  - django/db/backends/oracle/client.py
+  - django/db/backends/oracle/features.py
+  - django/db/backends/oracle/operations.py
+  - django/db/backends/oracle/utils.py
+  - django/db/backends/oracle/introspection.py
+  - django/db/backends/oracle/base.py
+  - django/db/backends/oracle/schema.py
+  - django/db/backends/oracle/validation.py
+  - django/db/backends/ddl_references.py
+  - django/db/backends/utils.py
+  - django/db/backends/sqlite3/creation.py
+  - django/db/backends/sqlite3/client.py
+  - django/db/backends/sqlite3/_functions.py
+  - django/db/backends/sqlite3/features.py
+  - django/db/backends/sqlite3/operations.py
+  - django/db/backends/sqlite3/introspection.py
+  - django/db/backends/sqlite3/base.py
+  - django/db/backends/sqlite3/schema.py
+  - django/db/backends/mysql/compiler.py
+  - django/db/backends/mysql/creation.py
+  - django/db/backends/mysql/client.py
+  - django/db/backends/mysql/features.py
+  - django/db/backends/mysql/operations.py
+  - django/db/backends/mysql/introspection.py
+  - django/db/backends/mysql/base.py
+  - django/db/backends/mysql/schema.py
+  - django/db/backends/mysql/validation.py
+  - django/db/backends/base/creation.py
+  - django/db/backends/base/client.py
+  - django/db/backends/base/features.py
+  - django/db/backends/base/operations.py
+  - django/db/backends/base/introspection.py
+  - django/db/backends/base/base.py
+  - django/db/backends/base/schema.py
+  - django/db/backends/base/validation.py
+  - django/db/__init__.py
+  - django/db/models/options.py
+  - django/db/models/signals.py
+  - django/db/models/enums.py
+  - django/db/models/query.py
+  - django/db/models/constants.py
+  - django/db/models/expressions.py
+  - django/db/models/__init__.py
+  - django/db/models/lookups.py
+  - django/db/models/indexes.py
+  - django/db/models/utils.py
+  - django/db/models/aggregates.py
+  - django/db/models/deletion.py
+  - django/db/models/functions/mixins.py
+  - django/db/models/functions/window.py
+  - django/db/models/functions/__init__.py
+  - django/db/models/functions/comparison.py
+  - django/db/models/functions/text.py
+  - django/db/models/functions/math.py
+  - django/db/models/functions/datetime.py
+  - django/db/models/functions/json.py
+  - django/db/models/functions/uuid.py
+  - django/db/models/fields/related_descriptors.py
+  - django/db/models/fields/files.py
+  - django/db/models/fields/mixins.py
+  - django/db/models/fields/generated.py
+  - django/db/models/fields/related.py
+  - django/db/models/fields/tuple_lookups.py
+  - django/db/models/fields/proxy.py
+  - django/db/models/fields/__init__.py
+  - django/db/models/fields/composite.py
+  - django/db/models/fields/reverse_related.py
+  - django/db/models/fields/related_lookups.py
+  - django/db/models/fields/json.py
+  - django/db/models/constraints.py
+  - django/db/models/fetch_modes.py
+  - django/db/models/manager.py
+  - django/db/models/query_utils.py
+  - django/db/models/base.py
+  - django/db/models/sql/compiler.py
+  - django/db/models/sql/query.py
+  - django/db/models/sql/subqueries.py
+  - django/db/models/sql/where.py
+  - django/db/models/sql/constants.py
+  - django/db/models/sql/datastructures.py
+  - django/db/utils.py
+  - django/views/csrf.py
+  - django/views/decorators/clickjacking.py
+  - django/views/decorators/gzip.py
+  - django/views/decorators/csrf.py
+  - django/views/decorators/vary.py
+  - django/views/decorators/cache.py
+  - django/views/decorators/csp.py
+  - django/views/decorators/common.py
+  - django/views/decorators/debug.py
+  - django/views/decorators/http.py
+  - django/views/debug.py
+  - django/views/static.py
+  - django/views/defaults.py
+  - django/views/i18n.py
+  - django/views/generic/list.py
+  - django/views/generic/__init__.py
+  - django/views/generic/edit.py
+  - django/views/generic/detail.py
+  - django/views/generic/dates.py
+  - django/views/generic/base.py
+  - django/conf/__init__.py
+  - django/conf/global_settings.py
+  - django/conf/app_template/__init__.py-tpl
+  - django/conf/app_template/views.py-tpl
+  - django/conf/app_template/admin.py-tpl
+  - django/conf/app_template/apps.py-tpl
+  - django/conf/app_template/models.py-tpl
+  - django/conf/app_template/tests.py-tpl
+  - django/conf/project_template/project_name/__init__.py-tpl
+  - django/conf/project_template/project_name/urls.py-tpl
+  - django/conf/project_template/project_name/asgi.py-tpl
+  - django/conf/project_template/project_name/wsgi.py-tpl
+  - django/conf/project_template/project_name/settings.py-tpl
+  - django/conf/project_template/manage.py-tpl
+  - django/conf/urls/static.py
+  - django/conf/urls/i18n.py
+  - django/apps/config.py
+  - django/apps/registry.py
+  - django/__main__.py
+---
+
+# Django
+
+## What this domain does
+Django's request/response infrastructure is the core plumbing that converts raw network connections (WSGI or ASGI) into `HttpRequest` objects, routes them through an ordered middleware chain, dispatches to views, and converts any exception into an appropriate HTTP response. It also handles file uploads, storage backends, message flash storage, and static file serving during development. The domain is designed around two parallel execution models (sync WSGI and async ASGI) that share the same middleware abstraction via runtime adaptation. `[llm-analyzed]`
+
+## Key behaviors
+- **Middleware chain is built once at startup, not per-request**: BaseHandler.load_middleware() iterates settings.MIDDLEWARE in reverse, wrapping each middleware around the previous handler. The chain is stored as self._middleware_chain and only rebuilt when load_middleware() is called again. The chain being None is the flag indicating the handler is not yet initialized — code that checks this uses it as a sentinel. `[llm-analyzed]`
+- **Sync/async middleware interop via automatic adaptation**: adapt_method_mode() wraps sync callables with sync_to_async and async callables with async_to_sync as needed. The middleware loader inspects each middleware's sync_capable and async_capable class attributes (both default True/False respectively) to decide which mode to use. If a middleware sets neither to True, a RuntimeError is raised at startup, not at request time. `[llm-analyzed]`
+- **Exception-to-response conversion is applied to every middleware layer**: convert_exception_to_response() wraps each layer in the chain, not just the outermost handler. This means exceptions raised inside any middleware are caught and converted before propagating further up the chain. The result: no middleware can ever leak a raw exception to the next middleware — every layer always receives a response object. `[llm-analyzed]`
+- **Exception type determines HTTP status code and logging destination**: response_for_exception() maps specific exception classes to status codes: Http404→404, PermissionDenied→403, MultiPartParserError/BadRequest/SuspiciousOperation→400, everything else→500. SuspiciousOperation subclasses are logged to django.security.<ClassName> (not django.request), which lets ops teams set up separate alerting for security events. RequestDataTooBig, TooManyFieldsSent, and TooManyFilesSent mark the request's POST parse as errored before logging, preventing a second parse attempt. `[llm-analyzed]`
+- **ASGI body is read fully into a temp file before the request object is created**: ASGIHandler.read_body() buffers the entire incoming HTTP body before constructing ASGIRequest. This differs from WSGI where the body stream is exposed directly via LimitedStream. The body_receive_timeout (60s) is a class attribute on ASGIRequest, not configurable per-request. `[llm-analyzed]`
+
+## Domain interactions
+- **Base**: BaseHandler in handlers/base.py is the foundation. Both WSGIHandler and ASGIHandler extend it. It provides load_middleware(), adapt_method_mode(), and the _middleware_chain. The base handler depends on django.urls for set_urlconf/get_resolver, on django.db for connection management, and on django.core.signals for request_started/request_finished. `[llm-analyzed]`
+- **Expressions / fields / lookups / options**: These are ORM-level domains. The handler layer does not interact with them directly — the dependency exists because handler tests and some middleware (e.g. transaction middleware) trigger database operations. The handler itself is agnostic to ORM details. `[llm-analyzed]`
+- **Proxy**: The proxy domain is referenced primarily for test infrastructure (RequestFactory, AsyncRequestFactory) that simulates requests without a real server. The handler's create_request() method is used by both real servers and test proxies. `[llm-analyzed]`
+
+## Gotchas and edge cases
+- Middleware exception handling is always synchronous even in async mode. The _exception_middleware list is adapted with is_async=False regardless of the handler mode. This means exception middleware cannot be native async — it will be wrapped with async_to_sync. `[llm-analyzed]`
+- TemplateResponse objects returned from exception handlers are forcibly rendered inside response_for_exception(). If the template raises during rendering, that exception is not caught here and will propagate — potentially causing a 500 inside a 404 handler. `[llm-analyzed]`
+- StorageHandler uses cached_property for backends, which means the first thread to access it wins. Overriding settings.STORAGES via override_settings in tests may not take effect if the handler was already accessed in a previous test that did not reset the cache. `[llm-analyzed]`
+- ASGIHandler only handles scope['type'] == 'http'. WebSocket or other ASGI connection types will raise ValueError. The FIXME comment in the source acknowledges this is intended to be configurable but isn't yet. `[llm-analyzed]`
+- In WSGI, LimitedStream defaults to 0 bytes if Content-Length is absent or non-integer. This means request.body will be empty for chunked transfer encoding requests, which is a known Django limitation. `[llm-analyzed]`
+
+## Notes from code
+- [HACK] datetime instances cannot be assigned new attributes. Define a subclass
+- [HACK] the convert_to_local_time flag will prevent
+- [FIXME] Allow to override this.
+- [TODO] Modify if/when that internal API is refactored
+- [FIXME] One day we'll should do this, but not in 1.0.
+- [TODO] Drop ImportError and KeyError when dropping support for PY312.
+- [TODO] this should be handled by some parameter to the ChangeList.
+- [TODO] when dropping support for GEOS 3.13 the z argument can be
+- [TODO] Adapt timezone information. See:
+- [TODO] Fix Envelope() for Point geometries.
+- [TODO] Fix significant figures.
+- [TODO] Autodetection of multigeometry types (see #7218).
+- [TODO] Support more than one geometry field / model. However, this
+- [TODO] It is expensive to retrieve a model for every record --
+- [TODO] allow deleting individual features (#8972)
+- [TODO] Add support for `diminfo` column (type MDSYS.SDO_DIM_ARRAY).
+- [TODO] Is this really the same as ST_Intersects()?
+- [TODO] Research way to find a more specific geometry field type
+- [TODO] Support 'M' extension.
+- [NOTE] If the field is a geometry field, the table is just recreated,
+- [FIXME] this currently assumes that upload handlers store the file as
+- [NOTE] There is no need to remap parent dependencies as we can
+- [TODO] investigate if old relational fields must be reloaded or if
+- [TODO] colorize this SQL code with style.SQL_KEYWORD(), etc.
+- [NOTE] We can't modify a dictionary's contents while looping
+- [FIXME] Rename possibly_multivalued to multivalued and fix detection
+- [TODO] Handle multiple backends with different feature flags.
+- [TODO] Handle multiple backends with different feature flags.
+- [TODO] It might be possible to trim more joins from the start of
+
+## Dependencies
+- [Base](../base/_overview.md)
+- [Constraints](../constraints/_overview.md)
+- [Expressions](../expressions/_overview.md)
+- [Fields](../fields/_overview.md)
+- [Indexes](../indexes/_overview.md)
+- [Lookups](../lookups/_overview.md)
+- [Options](../options/_overview.md)
+- [Proxy](../proxy/_overview.md)
+
+## Referenced by
+- [Apps](../apps/_overview.md)
+- [Article](../article/_overview.md)
+- [Bar](../bar/_overview.md)
+- [Base](../base/_overview.md)
+- [Cond-get-urls](../cond-get-urls/_overview.md)
+- [Custom-permissions](../custom-permissions/_overview.md)
+- [Custom-user](../custom-user/_overview.md)
+- [Customers](../customers/_overview.md)
+- [Data](../data/_overview.md)
+- [Default-related-name](../default-related-name/_overview.md)
+- [Empty-join](../empty-join/_overview.md)
+- [Expressions](../expressions/_overview.md)
+- [Extra-urls](../extra-urls/_overview.md)
+- [Fields](../fields/_overview.md)
+- [Foo](../foo/_overview.md)
+- [Good](../good/_overview.md)
+- [Indexes](../indexes/_overview.md)
+- [Invalid-models](../invalid-models/_overview.md)
+- [Is-active](../is-active/_overview.md)
+- [Minimal](../minimal/_overview.md)
+- [Models](../models/_overview.md)
+- [Multi-table](../multi-table/_overview.md)
+- [Namespace-package-base](../namespace-package-base/_overview.md)
+- [Natural](../natural/_overview.md)
+- [No-password](../no-password/_overview.md)
+- [One-config-app](../one-config-app/_overview.md)
+- [Person](../person/_overview.md)
+- [Proxy](../proxy/_overview.md)
+- [Publication](../publication/_overview.md)
+- [Query-performing-app](../query-performing-app/_overview.md)
+- [Staticfiles-config](../staticfiles-config/_overview.md)
+- [Tablespaces](../tablespaces/_overview.md)
+- [Tenant](../tenant/_overview.md)
+- [Test-csp](../test-csp/_overview.md)
+- [Test-exception](../test-exception/_overview.md)
+- [Test-security](../test-security/_overview.md)
+- [Tests](../tests/_overview.md)
+- [Tests-custom-error-handlers](../tests-custom-error-handlers/_overview.md)
+- [Two-configs-app](../two-configs-app/_overview.md)
+- [Two-configs-one-default-app](../two-configs-one-default-app/_overview.md)
+- [Two-default-configs-app](../two-default-configs-app/_overview.md)
+- [Urls](../urls/_overview.md)
+- [Uuid-pk](../uuid-pk/_overview.md)
+- [Views](../views/_overview.md)
+- [With-custom-email-field](../with-custom-email-field/_overview.md)
+- [With-foreign-key](../with-foreign-key/_overview.md)
+- [With-integer-username](../with-integer-username/_overview.md)
+- [With-last-login-attr](../with-last-login-attr/_overview.md)
+- [With-many-to-many](../with-many-to-many/_overview.md)
+- [With-unique-constraint](../with-unique-constraint/_overview.md)

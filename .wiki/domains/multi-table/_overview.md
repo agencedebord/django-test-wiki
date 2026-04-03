@@ -1,0 +1,26 @@
+---
+domain: multi-table
+confidence: inferred
+last_updated: 2026-04-03
+related_files:
+  - tests/serializers/models/multi_table.py
+---
+
+# Multi-table
+
+## Description
+LLM analysis was not available for this domain. `[inferred]`
+
+## Detected models
+- Child
+- Parent
+- ParentManager
+
+## Dependencies
+- [Base](../base/_overview.md)
+- [Constraints](../constraints/_overview.md)
+- [Django](../django/_overview.md)
+- [Expressions](../expressions/_overview.md)
+- [Indexes](../indexes/_overview.md)
+- [Lookups](../lookups/_overview.md)
+- [Options](../options/_overview.md)

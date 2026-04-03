@@ -1,0 +1,4 @@
+# codefidence configuration
+# staleness_days = 30
+# auto_index = true
+language = "en"
