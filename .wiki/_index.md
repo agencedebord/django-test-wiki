@@ -60,6 +60,14 @@
 - [With-many-to-many](domains/with-many-to-many/_overview.md)
 - [With-unique-constraint](domains/with-unique-constraint/_overview.md)
 
+## Analysis status
+
+### Fully analyzed (llm-analyzed)
+- Apps, Article, Base, Constraints, Custom-permissions, Custom-user, Django, Expressions, Fields, Indexes, Invalid-models, Lookups, Models, Options, Proxy, Tests, Urls, Views
+
+### Stubs (inferred — not yet analyzed)
+- Bar, Cond-get-urls, Customers, Data, Default-related-name, Empty-join, Extra-urls, Foo, Good, Importerror, Is-active, Minimal, Multi-table, Namespace-package-base, Natural, No-password, One-config-app, Person, Publication, Query-performing-app, Staticfiles-config, Tablespaces, Tenant, Test-csp, Test-exception, Test-security, Tests-custom-error-handlers, Two-configs-app, Two-configs-one-default-app, Two-default-configs-app, Uuid-pk, With-custom-email-field, With-foreign-key, With-integer-username, With-last-login-attr, With-many-to-many, With-unique-constraint
+
 ## Recent decisions
 
 | Date | Decision | Domain |
@@ -68,3 +76,4 @@
 ## Last updated
 
 - Initialized on 2026-04-03
+- 2026-04-03: Analyzed 8 additional domains (article, custom-permissions, custom-user, invalid-models, models, tests, urls, views)
