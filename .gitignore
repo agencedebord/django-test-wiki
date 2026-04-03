@@ -17,3 +17,8 @@ tests/.coverage*
 build/
 tests/report/
 tests/screenshots/
+
+# Codefidence
+.wiki/.env
+.wiki/.file-index.json
+.wiki/.drift-pending
