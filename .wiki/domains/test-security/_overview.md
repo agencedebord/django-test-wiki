@@ -16,3 +16,5 @@ LLM analysis was not available for this domain. `[inferred]`
 
 ## Dependencies
 - [Django](../django/_overview.md)
+- [Http](../http/_overview.md)
+- [Middleware](../middleware/_overview.md)

@@ -4,9 +4,9 @@
 > These candidates are not yet confirmed memory.
 > Edit this file or use `codefidence promote <id>` to validate.
 
-## django
+## core
 
-### django-001
+### core-001
 
 - **status**: pending
 - **type**: exception
@@ -14,13 +14,13 @@
 - **provenance**:
   - file: django/core/management/commands/squashmigrations.py
 - **rationale**: File path 'django/core/management/commands/squashmigrations.py' contains exception naming pattern (legacy/compat/override)
-- **target**: .wiki/domains/django/_overview.md
+- **target**: .wiki/domains/core/_overview.md
 
 > squashmigrations seems to contain a special case or legacy behavior
 
 **Action** : `confirm` | `reformulate` | `reject`
 
-### django-002
+### core-002
 
 - **status**: pending
 - **type**: exception
@@ -28,13 +28,13 @@
 - **provenance**:
   - file: django/core/management/commands/optimizemigration.py
 - **rationale**: File path 'django/core/management/commands/optimizemigration.py' contains exception naming pattern (legacy/compat/override)
-- **target**: .wiki/domains/django/_overview.md
+- **target**: .wiki/domains/core/_overview.md
 
 > optimizemigration seems to contain a special case or legacy behavior
 
 **Action** : `confirm` | `reformulate` | `reject`
 
-### django-003
+### core-003
 
 - **status**: pending
 - **type**: exception
@@ -42,13 +42,13 @@
 - **provenance**:
   - file: django/core/management/commands/makemigrations.py
 - **rationale**: File path 'django/core/management/commands/makemigrations.py' contains exception naming pattern (legacy/compat/override)
-- **target**: .wiki/domains/django/_overview.md
+- **target**: .wiki/domains/core/_overview.md
 
 > makemigrations seems to contain a special case or legacy behavior
 
 **Action** : `confirm` | `reformulate` | `reject`
 
-### django-004
+### core-004
 
 - **status**: pending
 - **type**: exception
@@ -56,7 +56,7 @@
 - **provenance**:
   - file: django/core/management/commands/showmigrations.py
 - **rationale**: File path 'django/core/management/commands/showmigrations.py' contains exception naming pattern (legacy/compat/override)
-- **target**: .wiki/domains/django/_overview.md
+- **target**: .wiki/domains/core/_overview.md
 
 > showmigrations seems to contain a special case or legacy behavior
 

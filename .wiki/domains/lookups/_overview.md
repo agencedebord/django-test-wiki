@@ -11,43 +11,48 @@ related_files:
 # Lookups
 
 ## What this domain does
-The lookups domain is Django's mechanism for translating Python filter expressions (e.g., `field__exact=value`, `field__gt=5`) into database-specific SQL WHERE clauses. It sits at the boundary between Python ORM semantics and raw SQL, handling type coercion, operator translation, database-specific quirks, and value validation. Every `QuerySet.filter()` call routes through this domain. It is foundational infrastructure: almost every other domain in this codebase depends on it to express queries. `[llm-analyzed]`
+The `lookups` domain implements Django's query expression system for translating Python filter expressions into SQL WHERE clauses. It defines the two-layer abstraction that powers all ORM filtering: `Transform` (field-to-field conversions in a lookup chain) and `Lookup` (the terminal boolean comparison). Every `Model.objects.filter(field__lookup=value)` call ultimately resolves through classes defined or registered here. The domain is almost entirely consumed by other domains — it is infrastructure, not business logic. `[llm-analyzed]`
 
 ## Key behaviors
-- **Two-class hierarchy: Lookup vs BuiltinLookup**: The base `Lookup` class handles generic expression lookups with no assumption about operator syntax. `BuiltinLookup` extends it with two key additions: (1) it applies `connection.ops.lookup_cast()` to the LHS to type-cast it in SQL when the backend requires it, and (2) it retrieves the actual SQL operator from `connection.operators[self.lookup_name]` via `get_rhs_op()`. This means all Django built-in lookups (`exact`, `gt`, `contains`, etc.) are BuiltinLookups, while custom or GIS lookups can extend the base `Lookup` directly with their own `as_sql()` implementation. `[llm-analyzed]`
-- **Value preparation is separated from SQL generation via FieldGetDbPrepValue mixins**: `FieldGetDbPrepValueMixin` (for single values) and `FieldGetDbPrepValueIterableMixin` (for lists/ranges) exist because field types need type-aware value preparation that differs from the generic `get_db_prep_lookup()` fallback. They call `field.get_db_prep_value()` on each value, which handles things like converting Python objects to database-compatible types (e.g., Python `datetime` to DB timestamp string, FK Python object to integer ID). Without these mixins, all values would pass through as raw Python objects with just `('%s', (value,))` formatting. `[llm-analyzed]`
-- **Bilateral transforms apply to both sides of a comparison**: When a `Transform` is marked `bilateral = True`, it is applied to both the LHS (field) and every value in the RHS before the comparison is made. This is collected during `Lookup.__init__()` via `lhs.get_bilateral_transforms()`. The classic example is `Unaccent`: `name__unaccent__contains='cafe'` will apply unaccent to both the stored field value and the search term, so accented characters are transparently matched. Bilateral transforms cannot be used with nested QuerySet RHS — this is explicitly checked and raises `NotImplementedError`. `[llm-analyzed]`
-- **EmptyResultSet and FullResultSet short-circuit SQL generation**: Several lookups raise `EmptyResultSet` (to produce a WHERE clause equivalent to FALSE) or `FullResultSet` (equivalent to TRUE) instead of generating real SQL. This avoids unnecessary database round-trips. Key cases: `In` with an empty list or a list of only `None` values raises `EmptyResultSet`. `IsNull` on a constant `Value(None)` raises `FullResultSet` (if checking IS NULL) or `EmptyResultSet` (if checking IS NOT NULL). Integer overflow lookups use this pattern too: filtering an IntegerField with a value outside the field's type range raises `EmptyResultSet` or `FullResultSet` depending on the operator direction. `[llm-analyzed]`
-- **In lookup removes None values silently and handles max IN list sizes**: SQL `NULL IN (...)` is never true, so `In.process_rhs()` silently discards `None` from the RHS list using `OrderedSet.discard(None)`. If removing `None` empties the list entirely, `EmptyResultSet` is raised. Additionally, some databases (notably Oracle) limit how many elements can appear in an IN clause. The lookup detects this via `connection.ops.max_in_list_size()` and splits a large list into multiple OR-connected IN clauses. `[llm-analyzed]`
+- **Bilateral transforms apply to both sides of a comparison**: When a `Transform` sets `bilateral=True`, it is applied to both the LHS (field) and RHS (filter value) symmetrically. The transforms appear in the same order on the RHS as in the lookup expression. This is used for case-insensitive lookups where the same normalization function must be applied to both sides. Bilateral transforms on nested QuerySets are explicitly forbidden and raise `NotImplementedError` immediately in `Lookup.__init__`. `[llm-analyzed]`
+- **Lookups wrap nested lookups in parentheses to preserve operator precedence**: In `process_lhs`, if the LHS is itself a `Lookup` instance, its SQL is wrapped in parentheses. Similarly in `process_rhs`, any RHS expression that is not a raw `Value` gets parenthesized unless it already starts with '('. This prevents precedence bugs when composing lookups. `[llm-analyzed]`
+- **Oracle backend gets special-cased for boolean expressions**: `Lookup.as_oracle` wraps any conditional expression (EXISTS, filters) in a `CASE WHEN ... THEN True ELSE False END` before comparison. This is required because Oracle does not allow boolean expressions to appear directly in WHERE clauses alongside other expressions. `select_format` applies the same wrapping for SELECT/GROUP BY contexts. `[llm-analyzed]`
+- **RHS preparation is skipped for expressions that already know how to compile themselves**: In `get_prep_lookup`, if `self.rhs` already has a `resolve_expression` method (i.e. it is an ORM expression like `F()`, `Subquery`, etc.), the field's `get_prep_value` is bypassed entirely. Only raw Python values get coerced through the field's type system. This is the mechanism that allows filter values to be either plain Python objects or composed query expressions. `[llm-analyzed]`
+- **GIS lookups delegate SQL generation to backend-specific SpatialOperator objects**: Unlike standard `BuiltinLookup` where `get_rhs_op` returns a string operator, `GISLookup.get_rhs_op` returns a `SpatialOperator` object with its own `as_sql()` method. This allows geometry operators (e.g. PostGIS `&&`, `~=`, `ST_Distance`) to produce arbitrarily complex SQL that may interleave LHS and RHS parts, which a simple string template cannot express. `[llm-analyzed]`
 
 ## Domain interactions
-- **Expressions**: Lookup extends Expression directly, making every lookup usable as a query expression (in annotations, Case/When, etc.). It uses Expression infrastructure for resolve_expression(), get_source_expressions(), and get_group_by_cols(). The rhs can be any Expression subclass, not just raw values — this is how subquery lookups work. `[llm-analyzed]`
-- **Fields**: Fields are the primary registration target for lookups. Field.get_lookup() is the resolution entry point for filter parsing. Field.get_db_prep_value() is called by FieldGetDbPrepValueMixin to type-convert RHS values. Fields also define output_field on their expressions, which lookups use to determine value preparation behavior. `[llm-analyzed]`
-- **Query_utils**: RegisterLookupMixin (from query_utils) provides the entire registration API. Lookup classes use @Field.register_lookup as a class decorator to self-register. The MRO-based lookup resolution in RegisterLookupMixin is what makes subclass lookup inheritance work transparently. `[llm-analyzed]`
-- **Django (ORM compiler/backend)**: Lookups are consumed by the SQL compiler. compiler.compile(lookup) dispatches to as_sql() or as_vendorname(). connection.operators[], connection.ops.lookup_cast(), connection.ops.integer_field_range(), and connection.ops.max_in_list_size() are all called from within lookup implementations to adapt SQL to the active backend. `[llm-analyzed]`
-- **Gis**: GISLookup and RasterBandTransform extend core Lookup/Transform. The GIS domain adds spatial operator dispatch, raster band handling, and geometry adapter wrapping. It relies on connection.ops.gis_operators[] and connection.ops.Adapter() from the GIS database backend operations. `[llm-analyzed]`
+- **Db (database backends)**: Lookups call `connection.ops.get_geom_placeholder_sql`, `connection.ops.Adapter`, and `connection.ops.gis_operators` to produce backend-specific SQL. The `as_vendorname` dispatch mechanism (e.g. `as_oracle`, `as_postgresql`) allows lookups to emit different SQL per backend without subclassing. `[llm-analyzed]`
+- **Expressions**: Lookup inherits from Expression and participates fully in the query expression tree. It calls `compiler.compile()` on sub-expressions and uses `Case/When/Value/Func` from expressions to build Oracle compatibility wrappers and bilateral transform chains. `[llm-analyzed]`
+- **Fields**: Lookups are registered on field classes via `RegisterLookupMixin`. The field's `output_field` and `get_prep_value` determine how raw Python values are coerced for the RHS. Fields like IntegerField, UUIDField, and DateTimeField have specialized lookup subclasses that override default comparison behavior. `[llm-analyzed]`
+- **Contrib.gis fields**: GIS lookups are registered directly on `BaseSpatialField` at module import time using the `@BaseSpatialField.register_lookup` decorator. All 30+ geometry and distance operators become available on spatial fields through this registration, with no opt-in required by model authors. `[llm-analyzed]`
+- **All filtering domains (article, bar, base, constraints, etc.)**: Every domain that performs ORM filtering implicitly depends on this domain. The `__exact`, `__in`, `__gt`, `__contains`, and all other lookup suffixes are resolved through the registration system defined here. No direct import is typically needed — lookups are auto-discovered through field class hierarchies. `[llm-analyzed]`
 
 ## Gotchas and edge cases
-- None in an In lookup list is silently dropped, not treated as NULL IS NULL. There is no way to include a NULL match via the In lookup — use Q(field__isnull=True) | Q(field__in=[...]) instead. `[llm-analyzed]`
-- Bilateral transforms cannot be used with subquery (QuerySet) RHS values. The NotImplementedError is raised in Lookup.__init__, not at query execution time. `[llm-analyzed]`
-- PostgresOperatorLookup lookups (HasKey, Overlap, etc.) have no as_sql() fallback. Using them on non-PostgreSQL backends will either raise NotImplementedError or produce invalid SQL silently. `[llm-analyzed]`
-- UUIDTextMixin modifies self.rhs in-place by replacing it with a SQL Replace() expression during process_rhs(). This means the lookup object is mutated on first compilation — do not compile the same lookup instance twice on different connections. `[llm-analyzed]`
-- IntegerField float rounding uses math.ceil, not round(). Filtering with field__lt=2.5 will be interpreted as field__lt=3, not field__lt=2. This is intentional but can be surprising. `[llm-analyzed]`
+- Registering a lookup on a field *instance* (via `Field._meta.get_field('name').register_lookup(...)`) takes precedence over class-level registrations. Instance-level lookups are invisible from the class and can cause confusing behavior if registered conditionally. `[llm-analyzed]`
+- Calling `expression.as_sql()` directly is explicitly wrong — always use `compiler.compile(expression)` so that backend-specific `as_vendorname()` overrides are invoked. `[llm-analyzed]`
+- For spatial fields, `__exact` does geometric vertex-by-vertex equality (SameAsLookup), not SQL `=`. This is a silent but significant semantic difference from non-spatial fields. `[llm-analyzed]`
+- Bilateral transforms cannot be used with nested QuerySets — this raises `NotImplementedError` immediately at `Lookup` construction time, before any query is executed. `[llm-analyzed]`
+- GIS band indices passed in query tuples are 0-based from the user's perspective (GDALRaster convention) but are stored internally as 1-based (PostGIS convention). Mixing these up produces off-by-one errors in multi-band raster queries. `[llm-analyzed]`
 
 ## Referenced by
 - [Article](../article/_overview.md)
 - [Bar](../bar/_overview.md)
 - [Base](../base/_overview.md)
+- [Conf](../conf/_overview.md)
+- [Constraints](../constraints/_overview.md)
+- [Contrib](../contrib/_overview.md)
+- [Core](../core/_overview.md)
 - [Custom-permissions](../custom-permissions/_overview.md)
 - [Custom-user](../custom-user/_overview.md)
 - [Customers](../customers/_overview.md)
 - [Data](../data/_overview.md)
+- [Db](../db/_overview.md)
 - [Default-related-name](../default-related-name/_overview.md)
 - [Django](../django/_overview.md)
+- [Django-views](../django-views/_overview.md)
 - [Empty-join](../empty-join/_overview.md)
-- [Expressions](../expressions/_overview.md)
-- [Fields](../fields/_overview.md)
 - [Foo](../foo/_overview.md)
+- [Forms](../forms/_overview.md)
 - [Invalid-models](../invalid-models/_overview.md)
 - [Is-active](../is-active/_overview.md)
 - [Minimal](../minimal/_overview.md)
@@ -60,8 +65,11 @@ The lookups domain is Django's mechanism for translating Python filter expressio
 - [Publication](../publication/_overview.md)
 - [Query-performing-app](../query-performing-app/_overview.md)
 - [Tablespaces](../tablespaces/_overview.md)
+- [Templates](../templates/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
 - [Tenant](../tenant/_overview.md)
 - [Tests](../tests/_overview.md)
+- [Utils](../utils/_overview.md)
 - [Uuid-pk](../uuid-pk/_overview.md)
 - [Views](../views/_overview.md)
 - [With-custom-email-field](../with-custom-email-field/_overview.md)

@@ -1,0 +1,369 @@
+---
+domain: contrib
+confidence: llm-analyzed
+last_updated: 2026-04-03
+related_files:
+  - django/contrib/syndication/apps.py
+  - django/contrib/syndication/views.py
+  - django/contrib/messages/constants.py
+  - django/contrib/messages/test.py
+  - django/contrib/messages/apps.py
+  - django/contrib/messages/storage/session.py
+  - django/contrib/messages/storage/cookie.py
+  - django/contrib/messages/storage/fallback.py
+  - django/contrib/messages/storage/base.py
+  - django/contrib/messages/api.py
+  - django/contrib/messages/context_processors.py
+  - django/contrib/messages/utils.py
+  - django/contrib/messages/middleware.py
+  - django/contrib/messages/views.py
+  - django/contrib/auth/templatetags/auth.py
+  - django/contrib/auth/signals.py
+  - django/contrib/auth/mixins.py
+  - django/contrib/auth/password_validation.py
+  - django/contrib/auth/models.py
+  - django/contrib/auth/common-passwords.txt.gz
+  - django/contrib/auth/validators.py
+  - django/contrib/auth/checks.py
+  - django/contrib/auth/management/__init__.py
+  - django/contrib/auth/management/commands/createsuperuser.py
+  - django/contrib/auth/management/commands/changepassword.py
+  - django/contrib/auth/base_user.py
+  - django/contrib/auth/__init__.py
+  - django/contrib/auth/tokens.py
+  - django/contrib/auth/apps.py
+  - django/contrib/auth/forms.py
+  - django/contrib/auth/backends.py
+  - django/contrib/auth/context_processors.py
+  - django/contrib/auth/admin.py
+  - django/contrib/auth/hashers.py
+  - django/contrib/auth/urls.py
+  - django/contrib/auth/handlers/modwsgi.py
+  - django/contrib/auth/middleware.py
+  - django/contrib/auth/views.py
+  - django/contrib/auth/decorators.py
+  - django/contrib/admin/templatetags/admin_list.py
+  - django/contrib/admin/templatetags/log.py
+  - django/contrib/admin/templatetags/admin_filters.py
+  - django/contrib/admin/templatetags/admin_modify.py
+  - django/contrib/admin/templatetags/base.py
+  - django/contrib/admin/templatetags/admin_urls.py
+  - django/contrib/admin/options.py
+  - django/contrib/admin/models.py
+  - django/contrib/admin/checks.py
+  - django/contrib/admin/actions.py
+  - django/contrib/admin/__init__.py
+  - django/contrib/admin/apps.py
+  - django/contrib/admin/widgets.py
+  - django/contrib/admin/forms.py
+  - django/contrib/admin/utils.py
+  - django/contrib/admin/sites.py
+  - django/contrib/admin/exceptions.py
+  - django/contrib/admin/tests.py
+  - django/contrib/admin/views/autocomplete.py
+  - django/contrib/admin/views/main.py
+  - django/contrib/admin/views/decorators.py
+  - django/contrib/admin/helpers.py
+  - django/contrib/admin/filters.py
+  - django/contrib/admin/decorators.py
+  - django/contrib/staticfiles/finders.py
+  - django/contrib/staticfiles/checks.py
+  - django/contrib/staticfiles/management/commands/findstatic.py
+  - django/contrib/staticfiles/management/commands/runserver.py
+  - django/contrib/staticfiles/management/commands/collectstatic.py
+  - django/contrib/staticfiles/handlers.py
+  - django/contrib/staticfiles/apps.py
+  - django/contrib/staticfiles/utils.py
+  - django/contrib/staticfiles/storage.py
+  - django/contrib/staticfiles/testing.py
+  - django/contrib/staticfiles/urls.py
+  - django/contrib/staticfiles/views.py
+  - django/contrib/flatpages/templatetags/flatpages.py
+  - django/contrib/flatpages/models.py
+  - django/contrib/flatpages/apps.py
+  - django/contrib/flatpages/forms.py
+  - django/contrib/flatpages/admin.py
+  - django/contrib/flatpages/urls.py
+  - django/contrib/flatpages/sitemaps.py
+  - django/contrib/flatpages/middleware.py
+  - django/contrib/flatpages/views.py
+  - django/contrib/sites/models.py
+  - django/contrib/sites/shortcuts.py
+  - django/contrib/sites/checks.py
+  - django/contrib/sites/apps.py
+  - django/contrib/sites/admin.py
+  - django/contrib/sites/management.py
+  - django/contrib/sites/requests.py
+  - django/contrib/sites/middleware.py
+  - django/contrib/sites/managers.py
+  - django/contrib/postgres/functions.py
+  - django/contrib/postgres/signals.py
+  - django/contrib/postgres/forms/ranges.py
+  - django/contrib/postgres/forms/array.py
+  - django/contrib/postgres/forms/hstore.py
+  - django/contrib/postgres/jinja2/postgres/widgets/split_array.html
+  - django/contrib/postgres/aggregates/mixins.py
+  - django/contrib/postgres/aggregates/statistics.py
+  - django/contrib/postgres/aggregates/general.py
+  - django/contrib/postgres/validators.py
+  - django/contrib/postgres/serializers.py
+  - django/contrib/postgres/expressions.py
+  - django/contrib/postgres/lookups.py
+  - django/contrib/postgres/apps.py
+  - django/contrib/postgres/operations.py
+  - django/contrib/postgres/indexes.py
+  - django/contrib/postgres/utils.py
+  - django/contrib/postgres/search.py
+  - django/contrib/postgres/fields/citext.py
+  - django/contrib/postgres/fields/ranges.py
+  - django/contrib/postgres/fields/utils.py
+  - django/contrib/postgres/fields/jsonb.py
+  - django/contrib/postgres/fields/array.py
+  - django/contrib/postgres/fields/hstore.py
+  - django/contrib/postgres/constraints.py
+  - django/contrib/redirects/models.py
+  - django/contrib/redirects/apps.py
+  - django/contrib/redirects/admin.py
+  - django/contrib/redirects/middleware.py
+  - django/contrib/sessions/models.py
+  - django/contrib/sessions/backends/signed_cookies.py
+  - django/contrib/sessions/backends/db.py
+  - django/contrib/sessions/backends/cached_db.py
+  - django/contrib/sessions/backends/cache.py
+  - django/contrib/sessions/backends/file.py
+  - django/contrib/sessions/backends/base.py
+  - django/contrib/sessions/serializers.py
+  - django/contrib/sessions/management/commands/clearsessions.py
+  - django/contrib/sessions/apps.py
+  - django/contrib/sessions/exceptions.py
+  - django/contrib/sessions/base_session.py
+  - django/contrib/sessions/middleware.py
+  - django/contrib/sitemaps/__init__.py
+  - django/contrib/sitemaps/apps.py
+  - django/contrib/sitemaps/views.py
+  - django/contrib/humanize/templatetags/humanize.py
+  - django/contrib/humanize/apps.py
+  - django/contrib/contenttypes/models.py
+  - django/contrib/contenttypes/fields.py
+  - django/contrib/contenttypes/checks.py
+  - django/contrib/contenttypes/management/__init__.py
+  - django/contrib/contenttypes/management/commands/remove_stale_contenttypes.py
+  - django/contrib/contenttypes/apps.py
+  - django/contrib/contenttypes/forms.py
+  - django/contrib/contenttypes/admin.py
+  - django/contrib/contenttypes/prefetch.py
+  - django/contrib/contenttypes/views.py
+  - django/contrib/gis/geos/mutable_list.py
+  - django/contrib/gis/geos/error.py
+  - django/contrib/gis/geos/LICENSE
+  - django/contrib/gis/geos/prepared.py
+  - django/contrib/gis/geos/polygon.py
+  - django/contrib/gis/geos/io.py
+  - django/contrib/gis/geos/linestring.py
+  - django/contrib/gis/geos/__init__.py
+  - django/contrib/gis/geos/factory.py
+  - django/contrib/gis/geos/coordseq.py
+  - django/contrib/gis/geos/point.py
+  - django/contrib/gis/geos/prototypes/misc.py
+  - django/contrib/gis/geos/prototypes/predicates.py
+  - django/contrib/gis/geos/prototypes/prepared.py
+  - django/contrib/gis/geos/prototypes/geom.py
+  - django/contrib/gis/geos/prototypes/io.py
+  - django/contrib/gis/geos/prototypes/__init__.py
+  - django/contrib/gis/geos/prototypes/coordseq.py
+  - django/contrib/gis/geos/prototypes/topology.py
+  - django/contrib/gis/geos/prototypes/threadsafe.py
+  - django/contrib/gis/geos/prototypes/errcheck.py
+  - django/contrib/gis/geos/collections.py
+  - django/contrib/gis/geos/geometry.py
+  - django/contrib/gis/geos/libgeos.py
+  - django/contrib/gis/geos/base.py
+  - django/contrib/gis/measure.py
+  - django/contrib/gis/forms/fields.py
+  - django/contrib/gis/forms/widgets.py
+  - django/contrib/gis/gdal/field.py
+  - django/contrib/gis/gdal/srs.py
+  - django/contrib/gis/gdal/error.py
+  - django/contrib/gis/gdal/LICENSE
+  - django/contrib/gis/gdal/geomtype.py
+  - django/contrib/gis/gdal/__init__.py
+  - django/contrib/gis/gdal/feature.py
+  - django/contrib/gis/gdal/datasource.py
+  - django/contrib/gis/gdal/prototypes/srs.py
+  - django/contrib/gis/gdal/prototypes/generation.py
+  - django/contrib/gis/gdal/prototypes/geom.py
+  - django/contrib/gis/gdal/prototypes/ds.py
+  - django/contrib/gis/gdal/prototypes/raster.py
+  - django/contrib/gis/gdal/prototypes/errcheck.py
+  - django/contrib/gis/gdal/layer.py
+  - django/contrib/gis/gdal/raster/band.py
+  - django/contrib/gis/gdal/raster/source.py
+  - django/contrib/gis/gdal/raster/base.py
+  - django/contrib/gis/gdal/raster/const.py
+  - django/contrib/gis/gdal/driver.py
+  - django/contrib/gis/gdal/geometries.py
+  - django/contrib/gis/gdal/base.py
+  - django/contrib/gis/gdal/libgdal.py
+  - django/contrib/gis/gdal/envelope.py
+  - django/contrib/gis/geoip2.py
+  - django/contrib/gis/shortcuts.py
+  - django/contrib/gis/feeds.py
+  - django/contrib/gis/admin/options.py
+  - django/contrib/gis/management/commands/inspectdb.py
+  - django/contrib/gis/management/commands/ogrinspect.py
+  - django/contrib/gis/utils/srs.py
+  - django/contrib/gis/utils/ogrinspect.py
+  - django/contrib/gis/utils/layermapping.py
+  - django/contrib/gis/utils/ogrinfo.py
+  - django/contrib/gis/apps.py
+  - django/contrib/gis/serializers/geojson.py
+  - django/contrib/gis/sitemaps/kml.py
+  - django/contrib/gis/sitemaps/views.py
+  - django/contrib/gis/geometry.py
+  - django/contrib/gis/db/backends/oracle/models.py
+  - django/contrib/gis/db/backends/oracle/adapter.py
+  - django/contrib/gis/db/backends/oracle/features.py
+  - django/contrib/gis/db/backends/oracle/operations.py
+  - django/contrib/gis/db/backends/oracle/introspection.py
+  - django/contrib/gis/db/backends/oracle/base.py
+  - django/contrib/gis/db/backends/oracle/schema.py
+  - django/contrib/gis/db/backends/postgis/models.py
+  - django/contrib/gis/db/backends/postgis/adapter.py
+  - django/contrib/gis/db/backends/postgis/pgraster.py
+  - django/contrib/gis/db/backends/postgis/features.py
+  - django/contrib/gis/db/backends/postgis/operations.py
+  - django/contrib/gis/db/backends/postgis/introspection.py
+  - django/contrib/gis/db/backends/postgis/base.py
+  - django/contrib/gis/db/backends/postgis/const.py
+  - django/contrib/gis/db/backends/postgis/schema.py
+  - django/contrib/gis/db/backends/utils.py
+  - django/contrib/gis/db/backends/mysql/features.py
+  - django/contrib/gis/db/backends/mysql/operations.py
+  - django/contrib/gis/db/backends/mysql/introspection.py
+  - django/contrib/gis/db/backends/mysql/base.py
+  - django/contrib/gis/db/backends/mysql/schema.py
+  - django/contrib/gis/db/backends/spatialite/models.py
+  - django/contrib/gis/db/backends/spatialite/adapter.py
+  - django/contrib/gis/db/backends/spatialite/client.py
+  - django/contrib/gis/db/backends/spatialite/features.py
+  - django/contrib/gis/db/backends/spatialite/operations.py
+  - django/contrib/gis/db/backends/spatialite/introspection.py
+  - django/contrib/gis/db/backends/spatialite/base.py
+  - django/contrib/gis/db/backends/spatialite/schema.py
+  - django/contrib/gis/db/backends/base/models.py
+  - django/contrib/gis/db/backends/base/adapter.py
+  - django/contrib/gis/db/backends/base/features.py
+  - django/contrib/gis/db/backends/base/operations.py
+  - django/contrib/gis/db/models/functions.py
+  - django/contrib/gis/db/models/fields.py
+  - django/contrib/gis/db/models/proxy.py
+  - django/contrib/gis/db/models/__init__.py
+  - django/contrib/gis/db/models/lookups.py
+  - django/contrib/gis/db/models/aggregates.py
+  - django/contrib/gis/db/models/sql/conversion.py
+  - django/contrib/gis/ptr.py
+  - django/contrib/gis/views.py
+  - django/contrib/admindocs/apps.py
+  - django/contrib/admindocs/utils.py
+  - django/contrib/admindocs/urls.py
+  - django/contrib/admindocs/middleware.py
+  - django/contrib/admindocs/views.py
+---
+
+# Contrib
+
+## What this domain does
+django.contrib is Django's bundled "batteries included" collection of optional, high-level frameworks — auth, admin, messages, static files, sitemaps, sessions, GIS, and more. Each sub-package is independently optional (added to INSTALLED_APPS as needed), but many are tightly coupled through signals, middleware, and the request/response cycle. The domain is not a single application: it is a collection of production-ready subsystems that any Django project can opt into. `[llm-analyzed]`
+
+## Key behaviors
+- **Auth: multi-backend credential dispatch with PermissionDenied short-circuit**: authenticate() iterates AUTHENTICATION_BACKENDS in order. Each backend is checked for signature compatibility first (via inspect.signature.bind) — incompatible backends are silently skipped. If a backend raises PermissionDenied, the loop stops immediately and no further backends are tried; this lets a backend act as an explicit blocker, not just a failed check. On complete failure, the user_login_failed signal is fired with credentials sanitized through a regex that redacts any key matching api|token|key|secret|password|signature. `[llm-analyzed]`
+- **Auth: session security on login — flush vs cycle_key**: login() distinguishes two cases: (1) if the session has a SESSION_KEY but it belongs to a *different* user or the session auth hash doesn't match, the session is fully flushed (session.flush()) to prevent session fixation; (2) if there is no SESSION_KEY, only the session key is cycled (session.cycle_key()) to preserve anonymous session data like cart contents. Three session keys are written: _auth_user_id (PK serialized to string), _auth_user_backend (dotted import path), and _auth_user_hash (HMAC of password for hash invalidation). `[llm-analyzed]`
+- **Auth modwsgi: timing-attack mitigation for non-existent users**: In the mod_wsgi handler (_get_user), when a user does not exist or is inactive, the code explicitly runs UserModel().set_password('') with a dummy instance. This consumes the same CPU time as a real password check, preventing an attacker from distinguishing 'user not found' from 'wrong password' based on response timing. `[llm-analyzed]`
+- **Messages: middleware presence is a hard requirement; fail_silently bypasses the exception**: add_message() checks for request._messages. If missing, it differentiates between 'not an HttpRequest at all' (TypeError, always raised) and 'middleware not installed' (MessageFailure, raised unless fail_silently=True). get_messages() is safe to call unconditionally and returns [] if middleware is absent — it never raises. get_level() similarly falls back to a default_storage instance, so reading the level is always safe even without middleware. `[llm-analyzed]`
+- **Static files handlers: intercept-and-delegate pattern for dev serving**: StaticFilesHandler and ASGIStaticFilesHandler wrap another WSGI/ASGI application. They inspect each incoming path: if it starts with STATIC_URL.path AND STATIC_URL has no netloc (i.e., it is not a remote CDN URL), they serve it locally and never call the wrapped app. Otherwise, they delegate 100% to the wrapped app. load_middleware() is a no-op because the wrapped application's middleware stack is already active — double-loading would duplicate processing. `[llm-analyzed]`
+
+## Domain interactions
+- **Sessions**: Auth writes and reads three session keys (_auth_user_id, _auth_user_backend, _auth_user_hash). It calls session.flush() for user-switching and session.cycle_key() to preserve anonymous data. The session framework must be active before any login() call. `[llm-analyzed]`
+- **Contenttypes**: Permission creation depends on ContentType rows existing. The auth management module explicitly triggers create_contenttypes() before creating permissions to handle ordering issues in INSTALLED_APPS. `[llm-analyzed]`
+- **Sites**: Sitemaps use django.contrib.sites to determine the domain for URL generation. If sites is not installed, an explicit Site object must be passed to get_urls(). The admin also uses sites for CurrentSiteManager and related functionality. `[llm-analyzed]`
+- **Middleware**: Messages, auth, and sessions all depend on their respective middleware being in MIDDLEWARE. Messages raises MessageFailure without MessageMiddleware. Auth's get_user depends on AuthenticationMiddleware. Static file handlers deliberately bypass middleware for static requests. `[llm-analyzed]`
+- **Signals (dispatch)**: Auth fires user_logged_in, user_logged_out, and user_login_failed signals. Permission management fires post-migrate hooks to create/rename permissions. These signals are the integration points for audit logging and session management. `[llm-analyzed]`
+- **Db**: The modwsgi handler manually calls db.reset_queries() and db.close_old_connections() in finally blocks because mod_wsgi calls authentication functions outside of the normal request/response cycle where Django's DB connection management doesn't apply. `[llm-analyzed]`
+- **Gis (gdal/geos C libraries)**: GeoDjango's GIS functionality wraps GEOS and GDAL C libraries via ctypes. These must be installed at the OS level. The db.models layer adds geometry-aware field types and lookups on top of standard Django ORM — it re-exports all standard model symbols plus spatial additions. `[llm-analyzed]`
+
+## Gotchas and edge cases
+- Auth backend with PermissionDenied stops ALL further backend checks — it is a hard block, not a soft failure. A misconfigured backend that raises PermissionDenied unexpectedly will silently deny all logins. `[llm-analyzed]`
+- The session PK is stored as a string (value_to_string), not as an int. _get_user_session_key() converts it back via pk.to_python(). Custom PK types must implement both correctly or session-based auth breaks. `[llm-analyzed]`
+- StaticFilesHandler skips serving if STATIC_URL contains a netloc (e.g., https://cdn.example.com/static/). Developers who set a CDN URL locally will see static files routed to their application, not served — and get 404s. `[llm-analyzed]`
+- ASGIStaticFilesHandler does not call super().__init__() — it initializes only self.application and self.base_url. The parent ASGIHandler.__init__ is intentionally bypassed to avoid middleware loading. `[llm-analyzed]`
+- Sitemap.get_domain() raises ImproperlyConfigured if django.contrib.sites is not installed AND no site is passed explicitly. This fails at request time, not at startup, making it easy to miss in tests. `[llm-analyzed]`
+
+## Notes from code
+- [TODO] Drop ImportError and KeyError when dropping support for PY312.
+- [TODO] this should be handled by some parameter to the ChangeList.
+- [TODO] when dropping support for GEOS 3.13 the z argument can be
+- [TODO] Adapt timezone information. See:
+- [TODO] Fix Envelope() for Point geometries.
+- [TODO] Fix significant figures.
+- [TODO] Autodetection of multigeometry types (see #7218).
+- [TODO] Support more than one geometry field / model. However, this
+- [TODO] It is expensive to retrieve a model for every record --
+- [TODO] allow deleting individual features (#8972)
+- [TODO] Add support for `diminfo` column (type MDSYS.SDO_DIM_ARRAY).
+- [TODO] Is this really the same as ST_Intersects()?
+- [TODO] Research way to find a more specific geometry field type
+- [TODO] Support 'M' extension.
+- [NOTE] If the field is a geometry field, the table is just recreated,
+
+## Dependencies
+- [Base](../base/_overview.md)
+- [Conf](../conf/_overview.md)
+- [Constraints](../constraints/_overview.md)
+- [Core](../core/_overview.md)
+- [Db](../db/_overview.md)
+- [Dispatch](../dispatch/_overview.md)
+- [Django](../django/_overview.md)
+- [Django-apps](../django-apps/_overview.md)
+- [Django-urls](../django-urls/_overview.md)
+- [Django-views](../django-views/_overview.md)
+- [Expressions](../expressions/_overview.md)
+- [Fields](../fields/_overview.md)
+- [Forms](../forms/_overview.md)
+- [Http](../http/_overview.md)
+- [Indexes](../indexes/_overview.md)
+- [Lookups](../lookups/_overview.md)
+- [Middleware](../middleware/_overview.md)
+- [Options](../options/_overview.md)
+- [Proxy](../proxy/_overview.md)
+- [Tasks](../tasks/_overview.md)
+- [Templates](../templates/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
+- [Utils](../utils/_overview.md)
+
+## Referenced by
+- [Base](../base/_overview.md)
+- [Conf](../conf/_overview.md)
+- [Core](../core/_overview.md)
+- [Custom-permissions](../custom-permissions/_overview.md)
+- [Custom-user](../custom-user/_overview.md)
+- [Data](../data/_overview.md)
+- [Db](../db/_overview.md)
+- [Django](../django/_overview.md)
+- [Django-views](../django-views/_overview.md)
+- [Invalid-models](../invalid-models/_overview.md)
+- [Is-active](../is-active/_overview.md)
+- [Natural](../natural/_overview.md)
+- [No-password](../no-password/_overview.md)
+- [Proxy](../proxy/_overview.md)
+- [Staticfiles-config](../staticfiles-config/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
+- [Test-csp](../test-csp/_overview.md)
+- [Tests](../tests/_overview.md)
+- [Utils](../utils/_overview.md)
+- [Uuid-pk](../uuid-pk/_overview.md)
+- [With-custom-email-field](../with-custom-email-field/_overview.md)
+- [With-foreign-key](../with-foreign-key/_overview.md)
+- [With-integer-username](../with-integer-username/_overview.md)
+- [With-last-login-attr](../with-last-login-attr/_overview.md)
+- [With-many-to-many](../with-many-to-many/_overview.md)
+- [With-unique-constraint](../with-unique-constraint/_overview.md)

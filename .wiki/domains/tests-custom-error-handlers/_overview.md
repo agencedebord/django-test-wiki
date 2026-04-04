@@ -16,4 +16,7 @@ LLM analysis was not available for this domain. `[inferred]`
 - MiddlewareAccessingContent
 
 ## Dependencies
+- [Core](../core/_overview.md)
 - [Django](../django/_overview.md)
+- [Django-urls](../django-urls/_overview.md)
+- [Templates](../templates/_overview.md)

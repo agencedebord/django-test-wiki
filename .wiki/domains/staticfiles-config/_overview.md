@@ -15,4 +15,5 @@ LLM analysis was not available for this domain. `[inferred]`
 - IgnorePatternsAppConfig
 
 ## Dependencies
+- [Contrib](../contrib/_overview.md)
 - [Django](../django/_overview.md)

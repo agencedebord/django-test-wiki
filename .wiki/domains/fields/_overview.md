@@ -10,40 +10,36 @@ related_files:
 # Fields
 
 ## What this domain does
-The fields domain handles Django's model field system, with a particular focus here on GIS/spatial fields (GeoDjango). It bridges the gap between Python geometric objects and spatial database columns, managing coordinate system metadata, geometry type enforcement, and database-specific SQL generation. The core pattern is that spatial fields extend Django's standard Field infrastructure but override the database preparation pipeline to route values through spatial adapters that the database backend (PostGIS, SpatiaLite, etc.) understands. `[llm-analyzed]`
+The fields domain provides Django's model field system — both the standard field type library (CharField, IntegerField, etc.) and the GeoDjango spatial field hierarchy. It serves as the foundational abstraction between Python model attributes and database columns, handling type coercion, validation, serialization, and database-specific DDL generation. The spatial field subset (BaseSpatialField → GeometryField/RasterField) adds coordinate system awareness, SRID management, and geometry/raster type coercion on top of the base Field machinery. `[llm-analyzed]`
 
 ## Key behaviors
-- **SRID metadata is cached per database alias to avoid repeated queries**: get_srid_info() maintains a module-level _srid_cache keyed by (connection.alias, srid). The first call per SRID per connection hits spatial_ref_sys (or falls back to GDAL's SpatialReference if the backend doesn't expose that table). Subsequent calls return the cached SRIDCacheEntry namedtuple containing units, units_name, spheroid WKT, and a geodetic flag. This matters for distance query construction, which needs unit information frequently. `[llm-analyzed]`
-- **SRID defaults to 4326 (WGS84) and is always included in migration output**: BaseSpatialField.__init__ defaults srid=4326. In deconstruct(), srid is always written to kwargs unconditionally — unlike spatial_index which is omitted when it equals the True default. The comment says this is for 'less fragility', meaning it avoids silent SRID changes if the default ever changes. `[llm-analyzed]`
-- **spatial_index replaces db_index for GIS fields**: Spatial fields use spatial_index=True (default) instead of Django's standard db_index. This is because spatial indexes (e.g., GIST in PostGIS) are created via database-specific DDL that differs from regular B-tree indexes. The spatial_index flag is passed to the backend's geo_db_type() indirectly and handled by the backend's spatial index creation logic. `[llm-analyzed]`
-- **Geometry value prep handles multiple input formats with fallback logic**: get_prep_value() accepts GEOSGeometry objects directly, or falls back to attempting raster/geometry construction from bytes, strings, or dicts. The is_candidate check distinguishes between 'maybe a geometry string' (bytes/str) and 'definitely trying to be a raster' (dict). A dict that fails GDALRaster construction raises ValueError explicitly, while a bytes/str failure silently returns None from get_raster_prep_value — the caller must handle the None case. `[llm-analyzed]`
-- **Geography flag conditionally wraps values in geography-aware adapter**: get_db_prep_value() checks both self.geography and connection.features.supports_geography before passing {'geography': True} to the connection's Adapter. This means the same field definition behaves differently across backends — on backends without geography support, geometry is used instead. The geography flag itself is defined on GeometryField (subclass), not BaseSpatialField. `[llm-analyzed]`
+- **null vs blank: two distinct concerns**: null=True controls database storage (stores NULL), blank=True controls form validation (allows empty input). These are deliberately separate: a field can accept blank input in forms while still storing a non-null value (requiring a clean() override to supply the missing value). Django's convention for string fields is to use empty string as the 'no data' state, not NULL — so null=True on string fields is redundant and should be avoided, except when the field also has unique=True and blank=True (where NULL avoids unique constraint violations on multiple blank values). `[llm-analyzed]`
+- **choices can be a callable (lazy evaluation)**: The choices argument accepts a zero-argument callable instead of a static mapping or list. This is intentional for I/O-bound choices (e.g., querying a database table for valid currencies/countries) or choices that vary per-project. The callable is invoked at form render time, not at model class definition time, enabling dynamic option sets without restarting the server. `[llm-analyzed]`
+- **Spatial fields use spatial_index, not db_index**: BaseSpatialField replaces the standard db_index with a spatial_index parameter (default True). This is because spatial indexes (e.g., GIST in PostgreSQL/PostGIS) require different DDL than regular B-tree indexes. Using db_index on a geometry column would create the wrong index type. The spatial_index flag is passed to the backend's geo_db_type() to generate correct column DDL. `[llm-analyzed]`
+- **SRID defaults to 4326 (WGS84) but can be -1 for unknown**: All spatial fields default to SRID 4326 (WGS84 lat/lon). SRID -1 means 'unknown/unspecified CRS'. The get_srid() method resolves SRID precedence: if the geometry object has no SRID, the field's SRID is used; if the field SRID is -1, the geometry's SRID takes priority. This allows storing geometry in any CRS while the field declares the expected system. `[llm-analyzed]`
+- **SRID unit info is cached per database alias**: get_srid_info() caches unit metadata (units, units_name, spheroid WKT, geodetic flag) in a module-level _srid_cache keyed by (alias, srid). This avoids hitting the spatial_ref_sys table on every distance query construction. The cache is process-lifetime — no invalidation mechanism exists, which is fine because spatial reference systems are immutable reference data. `[llm-analyzed]`
 
 ## Domain interactions
-- **Django (core DB backend)**: BaseSpatialField.db_type() delegates entirely to connection.ops.geo_db_type(self), meaning the SQL column type is determined by the backend, not the field. Similarly, get_placeholder_sql() delegates to connection.ops.get_geom_placeholder_sql(). The field itself is backend-agnostic; all database-specific decisions are pushed to the connection's ops object. `[llm-analyzed]`
-- **Proxy**: The GIS fields use SpatialProxy (from the proxy domain) as a descriptor to intercept attribute access on model instances. This allows lazy conversion of raw database values (WKB bytes, strings) into GEOSGeometry or GDALRaster objects on first access, rather than at load time. `[llm-analyzed]`
-- **Gdal / geos (django.contrib.gis)**: get_prep_value() and get_raster_prep_value() directly construct GDALRaster and GEOSGeometry objects. The field catches GDALException during raster construction as part of its type-detection logic. GEOSGeometry is the canonical Python representation for vector geometry; GDALRaster for raster data. `[llm-analyzed]`
-- **Expressions**: Spatial fields participate in the ORM expression system through get_db_prep_value(), which wraps values in backend-specific Adapter objects before they reach the SQL compiler. This is how spatial values get encoded as WKB or geography types in parameterized queries. `[llm-analyzed]`
-- **Base (model base)**: Fields are registered on models via contribute_to_class() (inherited from Field). The GIS field subclasses rely on the standard field registration pipeline but add spatial index creation as a side effect handled by the backend's schema editor, not the field itself. `[llm-analyzed]`
+- **Db**: Fields delegate database type generation to connection.ops.geo_db_type(self), making the actual SQL column type fully backend-dependent. The db domain's connection ops are also used for placeholder SQL (get_geom_placeholder_sql) and the Adapter wrapper for geometry serialization. `[llm-analyzed]`
+- **Contrib (gis)**: BaseSpatialField and its subclasses live inside contrib.gis and depend on gdal (GDALRaster, SpatialReference) and geos (GEOSGeometry and all geometry subtypes). These are optional C-extension dependencies — if GDAL/GEOS are not installed, the gis fields are unavailable entirely. `[llm-analyzed]`
+- **Core**: Spatial fields raise ImproperlyConfigured (from django.core.exceptions) when the backend does not support spatial operations, providing clear misconfiguration errors at startup rather than cryptic SQL errors at query time. `[llm-analyzed]`
+- **Base, conf, tests**: These domains import from fields — base likely uses standard field types for shared abstract models, conf uses fields for settings-related models, and tests exercise field behavior. The fields domain itself has no dependencies on these consumers. `[llm-analyzed]`
 
 ## Gotchas and edge cases
-- The _srid_cache is a module-level global dict. In long-running processes with multiple databases, stale entries won't be invalidated if the spatial_ref_sys table changes — a server restart is required to pick up SRID changes. `[llm-analyzed]`
-- get_raster_prep_value() silently returns None for bytes/str inputs that fail GDALRaster construction (is_candidate=True path). The caller (get_prep_value) must handle None and continue attempting geometry construction. If both raster and geometry construction fail, the raw value is passed through — which will likely cause a database error rather than a clean Python exception. `[llm-analyzed]`
-- BaseSpatialField sets empty_strings_allowed = False. This means the ORM will not substitute '' for None in string coercion paths. Spatial fields must always use NULL for missing values, not empty strings — the null=False + blank=True pattern that works for text fields is not viable here. `[llm-analyzed]`
-- spatial_index is decoupled from db_index. Setting db_index=True on a spatial field does not create a spatial index — it creates a regular B-tree index on the geometry column, which is almost certainly wrong. Only spatial_index=True triggers the correct GIST/R-tree index creation. `[llm-analyzed]`
-- The geodetic() method returning True means distance calculations must use degrees or a spheroid-aware function. Passing meter-based distance values to a query on a geodetic field will silently compute incorrect results — the ORM does not automatically convert units. `[llm-analyzed]`
-
-## Dependencies
-- [Base](../base/_overview.md)
-- [Constraints](../constraints/_overview.md)
-- [Django](../django/_overview.md)
-- [Expressions](../expressions/_overview.md)
-- [Indexes](../indexes/_overview.md)
-- [Lookups](../lookups/_overview.md)
-- [Options](../options/_overview.md)
-- [Proxy](../proxy/_overview.md)
+- Oracle stores NULL for empty strings regardless of null=True/False — the null attribute has no effect on Oracle for empty string handling. `[llm-analyzed]`
+- Using null=True on CharField/TextField creates two 'no data' states (NULL and empty string), making queries and comparisons ambiguous. Prefer null=False with blank=True for string fields. `[llm-analyzed]`
+- The SRID cache (_srid_cache) is a module-level dict — it persists for the process lifetime and is never invalidated. If spatial_ref_sys data changes at runtime (rare but possible in dev), the cache will serve stale data until the process restarts. `[llm-analyzed]`
+- spatial_index=True is not the same as db_index=True. Setting db_index on a geometry field will create the wrong index type. Always use spatial_index. `[llm-analyzed]`
+- get_raster_prep_value() silently returns None when the is_candidate path fails GDAL conversion, but raises ValueError when a dict input fails. The silent failure path can mask data problems — callers must check for None returns. `[llm-analyzed]`
 
 ## Referenced by
 - [Base](../base/_overview.md)
+- [Conf](../conf/_overview.md)
+- [Contrib](../contrib/_overview.md)
+- [Core](../core/_overview.md)
+- [Db](../db/_overview.md)
 - [Django](../django/_overview.md)
+- [Django-views](../django-views/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
 - [Tests](../tests/_overview.md)
+- [Utils](../utils/_overview.md)

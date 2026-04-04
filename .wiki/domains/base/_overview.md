@@ -11,57 +11,78 @@ related_files:
 # Base
 
 ## What this domain does
-The "base" domain provides the two foundational pillars of Django's runtime: the HTTP request/response pipeline (BaseHandler) and the ORM model class system (ModelBase metaclass + Model). These are not feature modules — they are the infrastructure everything else builds on. Almost every other domain in the codebase either inherits from Model or passes through BaseHandler. `[llm-analyzed]`
+The "base" domain provides two foundational pillars of Django's runtime: the HTTP request handler chain (BaseHandler) and the ORM model class system (ModelBase + Model). It is the lowest-level layer that every other domain builds on — defining how requests are processed and how Python classes become database-mapped models. `[llm-analyzed]`
 
 ## Key behaviors
-- **Middleware chain assembled in reverse at load time, not per-request**: load_middleware() iterates settings.MIDDLEWARE in reverse order, building a nested callable chain where each middleware wraps the next. The chain is stored in _middleware_chain once fully assembled. This means middleware startup cost is paid once at server start, not on every request. The assignment to _middleware_chain is intentionally the last step — it doubles as an initialization-complete flag checked by callers. `[llm-analyzed]`
-- **Sync/async middleware negotiation at middleware load time**: Each middleware advertises its capabilities via sync_capable (defaults True) and async_capable (defaults False) class attributes. BaseHandler.adapt_method_mode() wraps sync methods with sync_to_async or async methods with async_to_sync using asgiref, depending on whether the handler chain is currently in async mode. Exception-handling middleware (process_exception) is always adapted to sync mode regardless of the overall handler mode — this is an explicit current limitation noted in the code. `[llm-analyzed]`
-- **Separate async response path to avoid context-switch overhead**: get_response_async() exists as a distinct code path from get_response() rather than funneling through a single adapter. The comment explicitly says funneling WSGI through a single async get_response() is too slow. This is a deliberate performance trade-off that creates code duplication in exchange for eliminating unnecessary thread context switches for ASGI deployments. `[llm-analyzed]`
-- **ModelBase metaclass intercepts class creation to wire Django ORM infrastructure**: ModelBase.__new__() runs on every class definition that inherits from Model. It separates attributes into those with contribute_to_class() (Django descriptors, fields, managers) and plain Python attributes. Plain attrs go directly to type.__new__() so __set_name__ works correctly. Django-aware attrs are contributed after the class exists, allowing them to register themselves on _meta. `[llm-analyzed]`
-- **Per-model DoesNotExist, MultipleObjectsReturned, and NotUpdated exceptions are dynamically created**: ModelBase creates model-specific exception subclasses (e.g., MyModel.DoesNotExist) that inherit from their parent model's equivalent exceptions. This makes isinstance checks on parent models work correctly in multi-table inheritance hierarchies. NotUpdated also inherits from DatabaseError for backward compatibility — the comment notes that __subclasshook__ is not considered in exception handling. `[llm-analyzed]`
+- **Middleware chain assembly (sync/async dual-mode)**: BaseHandler.load_middleware() builds the middleware stack in reverse order from settings.MIDDLEWARE, wrapping each layer with convert_exception_to_response. Crucially, it negotiates sync/async compatibility per middleware: if the handler is async but the middleware only supports sync, it adapts using async_to_sync; conversely, sync handlers adapt async middleware via sync_to_async. The _middleware_chain attribute is only set after full initialization, serving as an atomic 'ready' flag — partial initialization is never visible to callers. `[llm-analyzed]`
+- **Exception middleware is forced synchronous**: process_exception hooks are always adapted to synchronous mode regardless of whether the overall handler is async. This is an intentional design constraint noted in the code: the exception-handling stack remains synchronous for now. Async middleware that defines process_exception will be wrapped with adapt_method_mode(False, ...), which applies async_to_sync. `[llm-analyzed]`
+- **MiddlewareNotUsed short-circuits handler adaptation**: When a middleware raises MiddlewareNotUsed during initialization, the handler reverts to adapted_handler (the version before the failed middleware was applied), not to the version before adaptation. This means the adaptation cost for that layer is thrown away but the chain continues cleanly. In DEBUG mode, the reason string is logged. `[llm-analyzed]`
+- **ModelBase metaclass bootstraps every Model subclass**: ModelBase.__new__ intercepts class creation for all Model subclasses. It separates attrs into contributable (those with contribute_to_class) and plain attrs, passes plain attrs to type.__new__ first to ensure __set_name__ is called correctly, then calls contribute_to_class for the rest. This ordering is critical: Django fields (descriptors) must be registered via contribute_to_class after the class exists, but simple attributes must be present during class body execution. `[llm-analyzed]`
+- **Per-model exception classes are dynamically generated**: ModelBase creates DoesNotExist, MultipleObjectsReturned, and NotUpdated as subclasses of the corresponding exceptions from all non-abstract parent models in the MRO. This allows catching MyModel.DoesNotExist specifically while still being caught by the generic ObjectDoesNotExist. NotUpdated additionally inherits from DatabaseError for backward compatibility — __subclasshook__ is not used in exception handling, so explicit inheritance is required. `[llm-analyzed]`
 
 ## Domain interactions
-- **Options**: ModelBase instantiates Options(_meta) for every model class, passing the inner Meta class. Options is the central registry for field definitions, db_table, ordering, constraints, indexes, and proxy relationships. Everything the ORM knows about a model's schema lives in _meta. `[llm-analyzed]`
-- **Fields**: Fields use contribute_to_class() to register themselves on _meta during ModelBase class creation. This is why fields must be declared at class level — ModelBase only processes them at class-definition time. `[llm-analyzed]`
-- **Proxy**: Proxy model support flows through ModelBase: proxy models share their parent's db_table but get their own _meta, manager chain, and exception classes. The base_meta check in ModelBase drives inheritance of ordering/get_latest_by which matters especially for proxy models that want the parent's default ordering. `[llm-analyzed]`
-- **Django (core handlers)**: BaseHandler is the shared base for both WSGIHandler and ASGIHandler. It provides load_middleware(), adapt_method_mode(), and the get_response/_get_response pair. Concrete handler subclasses call load_middleware() in their __call__ and then delegate to get_response() or get_response_async(). `[llm-analyzed]`
-- **Expressions**: Model.save() and related operations use ExpressionWrapper, DatabaseDefault, and F/Q from expressions. The base model layer is aware of database-side default values (DatabaseDefault) and uses them during insert to skip sending Python-side values when the DB should generate them. `[llm-analyzed]`
-- **Lookups**: LOOKUP_SEP ('__') is used in Model to traverse field paths during validation and deferred field resolution. The base model layer uses this constant but delegates actual lookup resolution to the lookup domain. `[llm-analyzed]`
+- **Middleware**: Consumes settings.MIDDLEWARE to build the handler chain. Calls each middleware's __init__ with an adapted handler, then introspects for process_view, process_template_response, and process_exception hooks. Raises ImproperlyConfigured if a middleware factory returns None. `[llm-analyzed]`
+- **Options**: ModelBase calls add_to_class('_meta', Options(meta, app_label)) on every new Model subclass. Options is the _meta object that stores all field definitions, ordering, db_table, and other model configuration. Everything downstream that reads model metadata goes through _meta. `[llm-analyzed]`
+- **Fields**: Fields implement contribute_to_class, which ModelBase uses as the signal to defer their registration until after the class shell exists. Plain field attributes without contribute_to_class would be added directly by type.__new__ and bypass Django's field registration machinery. `[llm-analyzed]`
+- **Dispatch**: ModelBase fires class_prepared signal after a model class is fully configured. Model.__init__ fires pre_init and post_init signals. Model.save fires pre_save and post_save. These signals are the primary extension points for third-party apps to hook into model lifecycle. `[llm-analyzed]`
+- **Django-apps**: ModelBase calls apps.get_containing_app_config(module) to auto-detect which installed app a model belongs to, deriving app_label automatically. If the module is not under any installed app and no explicit app_label is set, concrete models raise RuntimeError at class creation time — not at import time of the app. `[llm-analyzed]`
+- **Conf**: BaseHandler reads settings.MIDDLEWARE for the middleware list and settings.ROOT_URLCONF for URL resolution on each request. settings.DEBUG controls whether adaptation logging and MiddlewareNotUsed messages are emitted. `[llm-analyzed]`
+- **Db**: Model.NotUpdated inherits from DatabaseError for backward compatibility with code that catches database errors broadly. The base module imports transaction, connections, and router for save/delete operations on model instances. `[llm-analyzed]`
 
 ## Gotchas and edge cases
-- MiddlewareNotUsed rolls back the handler to adapted_handler (not the previous handler), not to the middleware's input. This means if middleware raises MiddlewareNotUsed, the already-adapted version of the previous handler becomes the new top of stack — the adaptation is not undone. `[llm-analyzed]`
-- The _middleware_chain flag pattern means that if load_middleware() raises mid-way through, _middleware_chain stays None and the server will appear uninitialized. There is no partial-init recovery. `[llm-analyzed]`
-- ModelBase runs at import time. Any side effect in contribute_to_class() — like querying the database for default values — will execute before Django's app registry is ready, likely causing AppRegistryNotReady errors. Fields and managers must be written to defer DB access. `[llm-analyzed]`
-- The exception inheritance chain for DoesNotExist walks the MRO of the bases list to find parent models with _meta. If multiple abstract bases are in the inheritance chain, none of their DoesNotExist exceptions are included — only non-abstract parents contribute. `[llm-analyzed]`
-- Non-abstract child models silently inherit ordering from non-abstract parents unless they explicitly set ordering in their own Meta. Setting ordering=None does NOT prevent inheritance — you must set ordering=[] to override with an empty list. `[llm-analyzed]`
+- Middleware adaptation is negotiated lazily per-layer: a sync Django setup will wrap async-capable middleware with async_to_sync only if it has no sync_capable=True. A middleware that sets both sync_capable and async_capable may run in either mode depending on handler context. `[llm-analyzed]`
+- The _middleware_chain assignment is intentionally last in load_middleware(). Any exception during middleware instantiation leaves _middleware_chain as None, which will cause a hard AttributeError on the first request — not a graceful startup failure. `[llm-analyzed]`
+- process_exception is always sync-wrapped even in an async handler. Writing async-native exception handling in middleware will not work as expected; the method will be run synchronously via async_to_sync. `[llm-analyzed]`
+- ModelBase skips initialization entirely for the Model class itself (not subclasses): `if not parents: return super_new(...)`. This means Model's own attrs bypass Django's metaclass machinery — only subclasses go through field registration. `[llm-analyzed]`
+- contributable_attrs are separated from new_attrs before type.__new__ is called, meaning Django descriptor fields are NOT present in the class dict when __set_name__ runs for other attrs. Code relying on field presence during sibling attribute __set_name__ will fail silently. `[llm-analyzed]`
 
 ## Notes from code
 - [TODO] Handle multiple backends with different feature flags.
 
 ## Dependencies
+- [Conf](../conf/_overview.md)
 - [Constraints](../constraints/_overview.md)
+- [Contrib](../contrib/_overview.md)
+- [Core](../core/_overview.md)
+- [Db](../db/_overview.md)
+- [Dispatch](../dispatch/_overview.md)
 - [Django](../django/_overview.md)
+- [Django-apps](../django-apps/_overview.md)
+- [Django-urls](../django-urls/_overview.md)
+- [Django-views](../django-views/_overview.md)
 - [Expressions](../expressions/_overview.md)
 - [Fields](../fields/_overview.md)
+- [Forms](../forms/_overview.md)
+- [Http](../http/_overview.md)
 - [Indexes](../indexes/_overview.md)
 - [Lookups](../lookups/_overview.md)
+- [Middleware](../middleware/_overview.md)
 - [Options](../options/_overview.md)
 - [Proxy](../proxy/_overview.md)
+- [Tasks](../tasks/_overview.md)
+- [Templates](../templates/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
+- [Utils](../utils/_overview.md)
 
 ## Referenced by
 - [Article](../article/_overview.md)
 - [Bar](../bar/_overview.md)
+- [Conf](../conf/_overview.md)
+- [Constraints](../constraints/_overview.md)
+- [Contrib](../contrib/_overview.md)
+- [Core](../core/_overview.md)
 - [Custom-permissions](../custom-permissions/_overview.md)
 - [Custom-user](../custom-user/_overview.md)
 - [Customers](../customers/_overview.md)
 - [Data](../data/_overview.md)
+- [Db](../db/_overview.md)
 - [Default-related-name](../default-related-name/_overview.md)
 - [Django](../django/_overview.md)
+- [Django-views](../django-views/_overview.md)
 - [Empty-join](../empty-join/_overview.md)
-- [Expressions](../expressions/_overview.md)
-- [Fields](../fields/_overview.md)
 - [Foo](../foo/_overview.md)
-- [Indexes](../indexes/_overview.md)
+- [Forms](../forms/_overview.md)
+- [Http](../http/_overview.md)
 - [Invalid-models](../invalid-models/_overview.md)
 - [Is-active](../is-active/_overview.md)
 - [Minimal](../minimal/_overview.md)
@@ -74,8 +95,12 @@ The "base" domain provides the two foundational pillars of Django's runtime: the
 - [Publication](../publication/_overview.md)
 - [Query-performing-app](../query-performing-app/_overview.md)
 - [Tablespaces](../tablespaces/_overview.md)
+- [Tasks](../tasks/_overview.md)
+- [Templates](../templates/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
 - [Tenant](../tenant/_overview.md)
 - [Tests](../tests/_overview.md)
+- [Utils](../utils/_overview.md)
 - [Uuid-pk](../uuid-pk/_overview.md)
 - [Views](../views/_overview.md)
 - [With-custom-email-field](../with-custom-email-field/_overview.md)

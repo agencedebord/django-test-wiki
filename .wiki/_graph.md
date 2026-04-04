@@ -5,265 +5,624 @@
 ```mermaid
 graph LR
     apps --> django
+    apps --> django-apps
     article --> base
     article --> constraints
+    article --> db
     article --> django
     article --> expressions
     article --> indexes
     article --> lookups
     article --> options
+    article --> utils
     bar --> base
     bar --> constraints
+    bar --> db
     bar --> django
     bar --> expressions
     bar --> indexes
     bar --> lookups
     bar --> options
+    bar --> utils
+    base --> conf
     base --> constraints
+    base --> contrib
+    base --> core
+    base --> db
+    base --> dispatch
     base --> django
+    base --> django-apps
+    base --> django-urls
+    base --> django-views
     base --> expressions
     base --> fields
+    base --> forms
+    base --> http
     base --> indexes
     base --> lookups
+    base --> middleware
     base --> options
     base --> proxy
+    base --> tasks
+    base --> templates
+    base --> templatetags
+    base --> utils
     cond-get-urls --> django
+    cond-get-urls --> django-urls
+    cond-get-urls --> http
+    conf --> base
+    conf --> constraints
+    conf --> contrib
+    conf --> core
+    conf --> db
+    conf --> dispatch
+    conf --> django
+    conf --> django-apps
+    conf --> django-urls
+    conf --> django-views
+    conf --> expressions
+    conf --> fields
+    conf --> forms
+    conf --> http
+    conf --> indexes
+    conf --> lookups
+    conf --> middleware
+    conf --> options
+    conf --> proxy
+    conf --> tasks
+    conf --> templates
+    conf --> templatetags
+    conf --> utils
+    constraints --> base
+    constraints --> core
+    constraints --> db
+    constraints --> django
+    constraints --> expressions
+    constraints --> indexes
+    constraints --> lookups
+    constraints --> options
+    constraints --> utils
+    contrib --> base
+    contrib --> conf
+    contrib --> constraints
+    contrib --> core
+    contrib --> db
+    contrib --> dispatch
+    contrib --> django
+    contrib --> django-apps
+    contrib --> django-urls
+    contrib --> django-views
+    contrib --> expressions
+    contrib --> fields
+    contrib --> forms
+    contrib --> http
+    contrib --> indexes
+    contrib --> lookups
+    contrib --> middleware
+    contrib --> options
+    contrib --> proxy
+    contrib --> tasks
+    contrib --> templates
+    contrib --> templatetags
+    contrib --> utils
+    core --> base
+    core --> conf
+    core --> constraints
+    core --> contrib
+    core --> db
+    core --> dispatch
+    core --> django
+    core --> django-apps
+    core --> django-urls
+    core --> django-views
+    core --> expressions
+    core --> fields
+    core --> forms
+    core --> http
+    core --> indexes
+    core --> lookups
+    core --> middleware
+    core --> options
+    core --> proxy
+    core --> tasks
+    core --> templates
+    core --> templatetags
+    core --> utils
     custom-permissions --> base
     custom-permissions --> constraints
+    custom-permissions --> contrib
+    custom-permissions --> db
     custom-permissions --> django
     custom-permissions --> expressions
     custom-permissions --> indexes
     custom-permissions --> lookups
     custom-permissions --> options
+    custom-permissions --> utils
     custom-user --> base
     custom-user --> constraints
+    custom-user --> contrib
+    custom-user --> db
     custom-user --> django
     custom-user --> expressions
     custom-user --> indexes
     custom-user --> lookups
     custom-user --> options
+    custom-user --> utils
     customers --> base
     customers --> constraints
+    customers --> db
     customers --> django
     customers --> expressions
     customers --> indexes
     customers --> lookups
     customers --> options
+    customers --> utils
     data --> base
     data --> constraints
+    data --> contrib
+    data --> db
     data --> django
     data --> expressions
     data --> indexes
     data --> lookups
     data --> options
+    data --> utils
+    db --> base
+    db --> conf
+    db --> constraints
+    db --> contrib
+    db --> core
+    db --> dispatch
+    db --> django
+    db --> django-apps
+    db --> django-urls
+    db --> django-views
+    db --> expressions
+    db --> fields
+    db --> forms
+    db --> http
+    db --> indexes
+    db --> lookups
+    db --> middleware
+    db --> options
+    db --> proxy
+    db --> tasks
+    db --> templates
+    db --> templatetags
+    db --> utils
     default-related-name --> base
     default-related-name --> constraints
+    default-related-name --> db
     default-related-name --> django
     default-related-name --> expressions
     default-related-name --> indexes
     default-related-name --> lookups
     default-related-name --> options
+    default-related-name --> utils
+    dispatch --> conf
+    dispatch --> django
+    dispatch --> utils
     django --> base
+    django --> conf
     django --> constraints
+    django --> contrib
+    django --> core
+    django --> db
+    django --> dispatch
+    django --> django-apps
+    django --> django-urls
+    django --> django-views
     django --> expressions
     django --> fields
+    django --> forms
+    django --> http
     django --> indexes
     django --> lookups
+    django --> middleware
     django --> options
     django --> proxy
+    django --> tasks
+    django --> templates
+    django --> templatetags
+    django --> utils
+    django-apps --> conf
+    django-apps --> core
+    django-apps --> django
+    django-apps --> utils
+    django-urls --> conf
+    django-urls --> core
+    django-urls --> django
+    django-urls --> django-views
+    django-urls --> http
+    django-urls --> utils
+    django-views --> base
+    django-views --> conf
+    django-views --> constraints
+    django-views --> contrib
+    django-views --> core
+    django-views --> db
+    django-views --> dispatch
+    django-views --> django
+    django-views --> django-apps
+    django-views --> django-urls
+    django-views --> expressions
+    django-views --> fields
+    django-views --> forms
+    django-views --> http
+    django-views --> indexes
+    django-views --> lookups
+    django-views --> middleware
+    django-views --> options
+    django-views --> proxy
+    django-views --> tasks
+    django-views --> templates
+    django-views --> templatetags
+    django-views --> utils
     empty-join --> base
     empty-join --> constraints
+    empty-join --> db
     empty-join --> django
     empty-join --> expressions
     empty-join --> indexes
     empty-join --> lookups
     empty-join --> options
-    expressions --> base
-    expressions --> constraints
-    expressions --> django
-    expressions --> indexes
-    expressions --> lookups
-    expressions --> options
+    empty-join --> utils
     extra-urls --> django
-    fields --> base
-    fields --> constraints
-    fields --> django
-    fields --> expressions
-    fields --> indexes
-    fields --> lookups
-    fields --> options
-    fields --> proxy
+    extra-urls --> django-urls
     foo --> base
     foo --> constraints
+    foo --> db
     foo --> django
     foo --> expressions
     foo --> indexes
     foo --> lookups
     foo --> options
+    foo --> utils
+    forms --> base
+    forms --> conf
+    forms --> constraints
+    forms --> core
+    forms --> db
+    forms --> django
+    forms --> expressions
+    forms --> indexes
+    forms --> lookups
+    forms --> options
+    forms --> templates
+    forms --> templatetags
+    forms --> utils
     good --> django
-    indexes --> base
-    indexes --> django
-    indexes --> expressions
+    good --> templates
+    http --> base
+    http --> conf
+    http --> core
+    http --> django
+    http --> utils
     invalid-models --> base
     invalid-models --> constraints
+    invalid-models --> contrib
+    invalid-models --> db
     invalid-models --> django
     invalid-models --> expressions
     invalid-models --> indexes
     invalid-models --> lookups
     invalid-models --> options
+    invalid-models --> utils
     is-active --> base
     is-active --> constraints
+    is-active --> contrib
+    is-active --> db
     is-active --> django
     is-active --> expressions
     is-active --> indexes
     is-active --> lookups
     is-active --> options
+    is-active --> utils
+    middleware --> conf
+    middleware --> core
+    middleware --> django
+    middleware --> django-urls
+    middleware --> http
+    middleware --> utils
     minimal --> base
     minimal --> constraints
+    minimal --> db
     minimal --> django
     minimal --> expressions
     minimal --> indexes
     minimal --> lookups
     minimal --> options
+    minimal --> utils
     models --> base
     models --> constraints
+    models --> db
     models --> django
+    models --> django-apps
     models --> expressions
     models --> indexes
     models --> lookups
     models --> options
+    models --> utils
     multi-table --> base
     multi-table --> constraints
+    multi-table --> db
     multi-table --> django
     multi-table --> expressions
     multi-table --> indexes
     multi-table --> lookups
     multi-table --> options
+    multi-table --> utils
     namespace-package-base --> django
+    namespace-package-base --> django-apps
     natural --> base
     natural --> constraints
+    natural --> contrib
+    natural --> db
     natural --> django
     natural --> expressions
     natural --> indexes
     natural --> lookups
     natural --> options
+    natural --> utils
     no-password --> base
     no-password --> constraints
+    no-password --> contrib
+    no-password --> db
     no-password --> django
     no-password --> expressions
     no-password --> indexes
     no-password --> lookups
     no-password --> options
+    no-password --> utils
     one-config-app --> django
+    one-config-app --> django-apps
     person --> base
     person --> constraints
+    person --> db
     person --> django
     person --> expressions
     person --> indexes
     person --> lookups
     person --> options
+    person --> utils
     proxy --> base
     proxy --> constraints
+    proxy --> contrib
+    proxy --> db
     proxy --> django
     proxy --> expressions
     proxy --> indexes
     proxy --> lookups
     proxy --> options
+    proxy --> utils
     publication --> base
     publication --> constraints
+    publication --> db
     publication --> django
     publication --> expressions
     publication --> indexes
     publication --> lookups
     publication --> options
+    publication --> utils
     query-performing-app --> base
     query-performing-app --> constraints
+    query-performing-app --> db
     query-performing-app --> django
+    query-performing-app --> django-apps
     query-performing-app --> expressions
     query-performing-app --> indexes
     query-performing-app --> lookups
     query-performing-app --> options
+    query-performing-app --> utils
+    staticfiles-config --> contrib
     staticfiles-config --> django
     tablespaces --> base
     tablespaces --> constraints
+    tablespaces --> db
     tablespaces --> django
     tablespaces --> expressions
     tablespaces --> indexes
     tablespaces --> lookups
     tablespaces --> options
+    tablespaces --> utils
+    tasks --> base
+    tasks --> conf
+    tasks --> core
+    tasks --> db
+    tasks --> dispatch
+    tasks --> django
+    tasks --> utils
+    templates --> base
+    templates --> conf
+    templates --> constraints
+    templates --> core
+    templates --> db
+    templates --> dispatch
+    templates --> django
+    templates --> django-apps
+    templates --> django-urls
+    templates --> expressions
+    templates --> forms
+    templates --> http
+    templates --> indexes
+    templates --> lookups
+    templates --> middleware
+    templates --> options
+    templates --> utils
+    templatetags --> base
+    templatetags --> conf
+    templatetags --> constraints
+    templatetags --> contrib
+    templatetags --> core
+    templatetags --> db
+    templatetags --> dispatch
+    templatetags --> django
+    templatetags --> django-apps
+    templatetags --> django-urls
+    templatetags --> django-views
+    templatetags --> expressions
+    templatetags --> fields
+    templatetags --> forms
+    templatetags --> http
+    templatetags --> indexes
+    templatetags --> lookups
+    templatetags --> middleware
+    templatetags --> options
+    templatetags --> proxy
+    templatetags --> tasks
+    templatetags --> templates
+    templatetags --> utils
     tenant --> base
     tenant --> constraints
+    tenant --> db
     tenant --> django
     tenant --> expressions
     tenant --> indexes
     tenant --> lookups
     tenant --> options
+    tenant --> utils
+    test-csp --> contrib
     test-csp --> django
+    test-csp --> utils
+    test-exception --> core
     test-exception --> django
     test-security --> django
+    test-security --> http
+    test-security --> middleware
     tests --> base
+    tests --> conf
     tests --> constraints
+    tests --> contrib
+    tests --> core
+    tests --> db
+    tests --> dispatch
     tests --> django
+    tests --> django-apps
+    tests --> django-urls
+    tests --> django-views
     tests --> expressions
     tests --> fields
+    tests --> forms
+    tests --> http
     tests --> indexes
     tests --> lookups
+    tests --> middleware
     tests --> options
     tests --> proxy
+    tests --> tasks
+    tests --> templates
+    tests --> templatetags
+    tests --> utils
+    tests-custom-error-handlers --> core
     tests-custom-error-handlers --> django
+    tests-custom-error-handlers --> django-urls
+    tests-custom-error-handlers --> templates
     two-configs-app --> django
+    two-configs-app --> django-apps
     two-configs-one-default-app --> django
+    two-configs-one-default-app --> django-apps
     two-default-configs-app --> django
+    two-default-configs-app --> django-apps
     urls --> django
+    urls --> django-urls
+    urls --> django-views
+    utils --> base
+    utils --> conf
+    utils --> constraints
+    utils --> contrib
+    utils --> core
+    utils --> db
+    utils --> dispatch
+    utils --> django
+    utils --> django-apps
+    utils --> django-urls
+    utils --> django-views
+    utils --> expressions
+    utils --> fields
+    utils --> forms
+    utils --> http
+    utils --> indexes
+    utils --> lookups
+    utils --> middleware
+    utils --> options
+    utils --> proxy
+    utils --> tasks
+    utils --> templates
+    utils --> templatetags
     uuid-pk --> base
     uuid-pk --> constraints
+    uuid-pk --> contrib
+    uuid-pk --> db
     uuid-pk --> django
     uuid-pk --> expressions
     uuid-pk --> indexes
     uuid-pk --> lookups
     uuid-pk --> options
+    uuid-pk --> utils
     views --> base
     views --> constraints
+    views --> core
+    views --> db
     views --> django
+    views --> django-views
     views --> expressions
+    views --> http
     views --> indexes
     views --> lookups
+    views --> middleware
     views --> options
+    views --> utils
     with-custom-email-field --> base
     with-custom-email-field --> constraints
+    with-custom-email-field --> contrib
+    with-custom-email-field --> db
     with-custom-email-field --> django
     with-custom-email-field --> expressions
     with-custom-email-field --> indexes
     with-custom-email-field --> lookups
     with-custom-email-field --> options
+    with-custom-email-field --> utils
     with-foreign-key --> base
     with-foreign-key --> constraints
+    with-foreign-key --> contrib
+    with-foreign-key --> db
     with-foreign-key --> django
     with-foreign-key --> expressions
     with-foreign-key --> indexes
     with-foreign-key --> lookups
     with-foreign-key --> options
+    with-foreign-key --> utils
     with-integer-username --> base
     with-integer-username --> constraints
+    with-integer-username --> contrib
+    with-integer-username --> db
     with-integer-username --> django
     with-integer-username --> expressions
     with-integer-username --> indexes
     with-integer-username --> lookups
     with-integer-username --> options
+    with-integer-username --> utils
+    with-last-login-attr --> contrib
     with-last-login-attr --> django
     with-many-to-many --> base
     with-many-to-many --> constraints
+    with-many-to-many --> contrib
+    with-many-to-many --> db
     with-many-to-many --> django
     with-many-to-many --> expressions
     with-many-to-many --> indexes
     with-many-to-many --> lookups
     with-many-to-many --> options
+    with-many-to-many --> utils
     with-unique-constraint --> base
     with-unique-constraint --> constraints
+    with-unique-constraint --> contrib
+    with-unique-constraint --> db
     with-unique-constraint --> django
     with-unique-constraint --> expressions
     with-unique-constraint --> indexes
     with-unique-constraint --> lookups
     with-unique-constraint --> options
+    with-unique-constraint --> utils
     importerror
 ```

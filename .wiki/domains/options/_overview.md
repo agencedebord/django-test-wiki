@@ -10,27 +10,28 @@ related_files:
 # Options
 
 ## What this domain does
-The `options` domain implements Django's model metadata system — the `Options` class that powers `model._meta`. It is the single source of truth for every configuration decision a model carries: its database table name, field lists, manager names, ordering, permissions, proxy relationships, and more. Every model in the project attaches one `Options` instance to itself at class-creation time via `contribute_to_class`. This domain has no project-level dependencies; it is a pure foundational layer that every other model-bearing domain consumes. `[llm-analyzed]`
+The `options` domain implements Django's `Model._meta` API — the `Options` class that stores and manages all metadata for a model class. It is the central registry for every model's structural configuration: field lists, table names, ordering, permissions, manager names, proxy relationships, and inheritance state. Every other domain in the project reads from `_meta` to understand what a model is and how it should behave. `[llm-analyzed]`
 
 ## Key behaviors
-- **Recognizes exactly the Meta options listed in DEFAULT_NAMES**: Only the options enumerated in the `DEFAULT_NAMES` tuple are read from a model's inner `class Meta` and applied to the `Options` instance. Any attribute not in this list is silently ignored during `contribute_to_class`. Adding a new Meta option to Django requires adding it to `DEFAULT_NAMES` first. `[llm-analyzed]`
-- **Derives db_table automatically from app label and class name**: If `db_table` is not set, Django generates it as `{app_label}_{model_name}` where `model_name` is the lowercase class name. This happens in `contribute_to_class` after `object_name` and `model_name` are resolved from the class. Overriding `db_table` entirely bypasses this derivation. `[llm-analyzed]`
-- **Normalizes unique_together to always be a tuple of tuples**: `normalize_together` accepts either a flat tuple of strings (e.g. `('field_a', 'field_b')`) representing a single constraint, or a tuple of tuples for multiple constraints. It normalizes both forms to `((field_a, field_b),)` so downstream code only has to handle one shape. Invalid values are returned verbatim and caught later by the system check framework. `[llm-analyzed]`
-- **Wraps field lists in ImmutableList to prevent accidental mutation**: `make_immutable_fields_list` wraps any returned field collection in an `ImmutableList` that emits a warning if mutated. This exists because `FORWARD_PROPERTIES` and `REVERSE_PROPERTIES` are cached; mutating the list in place would corrupt the cache for every caller. The warning names the property, making the source of the mutation easy to trace. `[llm-analyzed]`
-- **Separates forward and reverse cached properties for targeted cache invalidation**: `FORWARD_PROPERTIES` (fields, managers, concrete_fields, etc.) are properties whose answers are determinable from the model itself. `REVERSE_PROPERTIES` (related_objects, fields_map, _relation_tree) depend on other models pointing back. They are invalidated separately so that adding a ForeignKey on model B pointing to model A only busts A's reverse cache, not its forward cache. `[llm-analyzed]`
+- **Centralizes model metadata resolution at class construction time**: `Options.contribute_to_class` is called during model metaclass processing and wires `cls._meta = self`. At that point it derives `object_name` (raw class name), `model_name` (lowercased), and a human-readable `verbose_name` via `camel_case_to_spaces`. All downstream code that asks 'what is this model called?' goes through `_meta`. `[llm-analyzed]`
+- **Enforces immutability on derived field lists**: Field collections returned by the public API (e.g. `concrete_fields`, `many_to_many`) are wrapped in `ImmutableList` with an explicit warning message. This prevents callers from accidentally mutating cached state that is shared across the process. The NOTE comment in the source explicitly flags this: dict contents cannot be modified while looping — the same constraint applies here. `[llm-analyzed]`
+- **Manages two separate caches: FORWARD_PROPERTIES and REVERSE_PROPERTIES**: `FORWARD_PROPERTIES` covers fields, managers, and computed field maps — derived from the model itself. `REVERSE_PROPERTIES` covers reverse relations and the relation tree — derived from other models pointing at this one. These two sets are invalidated separately because reverse relations are populated lazily after all apps are loaded, while forward properties are available immediately after the class is created. `[llm-analyzed]`
+- **Derives default DB table name from app_label + model_name**: Unless `db_table` is set explicitly, Django computes the table name as `{app_label}_{model_name}`. This is a convention the framework enforces globally. Overriding requires setting `Meta.db_table`. For Oracle, Django additionally truncates and uppercases table names unless the name is explicitly quoted with double quotes inside the string value. `[llm-analyzed]`
+- **Normalizes `unique_together` / `option_together` to always be a tuple of tuples**: `normalize_together()` handles the shorthand form where a developer writes a single flat tuple instead of a tuple-of-tuples. It converts `('a', 'b')` to `(('a', 'b'),)` so all downstream code can assume uniform structure. Invalid inputs are returned verbatim so the system check framework can report them with proper error messages rather than crashing at startup. `[llm-analyzed]`
 
 ## Domain interactions
-- **All model-bearing domains (article, bar, base, etc.)**: Every model class that defines `class Meta` gets an `Options` instance attached as `cls._meta` via `contribute_to_class`. All ORM operations (queries, migrations, admin, serialization) consult `_meta` for field lists, table names, ordering, managers, and constraints. This domain is a write-once-at-class-creation, read-many-at-runtime registry. `[llm-analyzed]`
-- **Django.apps (AppRegistry)**: `Options` holds a reference to the app registry (`self.apps`, defaulting to the global `apps`). This allows models in isolated registries (e.g. test setups) to resolve their app config without touching the global state. The `app_config` property looks up by `app_label` without triggering imports. `[llm-analyzed]`
-- **Django.db.connections / django backends**: `contribute_to_class` imports `connection` and `truncate_name` from the DB backend to handle database-specific table name constraints (notably Oracle's 30-character limit). The `db_tablespace` option is silently ignored by backends that don't support tablespaces. `[llm-analyzed]`
-- **Django.core.signals (setting_changed)**: The `setting_changed` signal is imported, indicating that `Options` registers a handler to react when Django settings change at runtime (relevant in test suites using `@override_settings`). Cached properties in `FORWARD_PROPERTIES` and `REVERSE_PROPERTIES` need to be cleared when settings that affect field resolution change. `[llm-analyzed]`
+- **Virtually all model-using domains**: Every domain that defines a model reads `_meta` to discover fields, table name, ordering, permissions, and manager configuration. `options` is a read-heavy, write-once domain: it is populated at class creation and then consumed everywhere else. `[llm-analyzed]`
+- **Migrations / db**: The `managed`, `db_table`, `db_tablespace`, `indexes`, `constraints`, and `original_attrs` attributes are consumed by the migration framework to generate and apply schema changes. `managed=False` is the primary escape hatch when Django should not own the DDL. `[llm-analyzed]`
+- **Managers (base_manager, default_manager)**: `Options` resolves manager names (`base_manager_name`, `default_manager_name`) and caches resolved manager instances in `FORWARD_PROPERTIES`. The manager lookup is delegated to `apps` registry but the resolution result lives on `_meta`. `[llm-analyzed]`
+- **Proxy / abstract inheritance**: Abstract models set `abstract=True` and are never registered as concrete models. Proxy models set `proxy=True` and share the parent's table. `Options` tracks both flags and the resulting `proxy_for_model` chain, which is consumed by queryset construction and admin registration. `[llm-analyzed]`
+- **Reverse relations / related_objects**: `REVERSE_PROPERTIES` (including `_relation_tree` and `fields_map`) are populated after all apps finish loading, not at class creation time. Code that accesses reverse relations before `AppRegistryNotReady` is resolved will get an empty or incorrect result. `[llm-analyzed]`
 
 ## Gotchas and edge cases
-- A model defined outside of any app in INSTALLED_APPS must explicitly set `app_label` in its Meta, otherwise Django cannot resolve it and will raise ImproperlyConfigured. `[llm-analyzed]`
-- For Oracle, Django may silently shorten and uppercase table names to meet the 30-character limit. To preserve a specific casing, wrap the value in double-quotes: `db_table = '"my_table_name"'`. This quoting is harmless on other backends. `[llm-analyzed]`
-- MySQL/MariaDB: always use lowercase `db_table` values. The MySQL backend is case-sensitive on some filesystems and the convention is enforced by recommendation, not by Django code. `[llm-analyzed]`
-- unique_together accepts a flat tuple like `('a', 'b')` and normalizes it to `(('a', 'b'),)` — one constraint on two fields. A tuple of tuples like `(('a', 'b'), ('c', 'd'))` is two separate constraints. The normalization is invisible; passing the wrong shape produces the wrong constraints silently. `[llm-analyzed]`
-- The NOTE comment 'We can't modify a dictionary's contents while looping' signals a pattern somewhere in this file where iteration over a dict must be done over a snapshot (e.g. `list(d.items())`). Callers adding fields or managers during model construction must be aware of this ordering constraint. `[llm-analyzed]`
+- Mutating any ImmutableList returned by `_meta` (e.g. `_meta.concrete_fields`) raises an error at runtime with a descriptive message, but only if the code actually tries to mutate it — silent bugs can appear if callers assume they got a plain list and skip mutation. `[llm-analyzed]`
+- `managed=False` does NOT skip M2M join table creation when the other side is managed. Developers expecting full DDL isolation must explicitly use `through=` with their own managed intermediary model. `[llm-analyzed]`
+- The `apps` attribute on `Options` can be overridden to point at a custom app registry. Most code assumes `django.apps.apps` is canonical, so using a custom registry can cause subtle failures in generic views, admin, and signals that do their own registry lookups. `[llm-analyzed]`
+- `default_related_name` affects `related_query_name` as well. Setting it on an abstract model requires `%(app_label)s` and `%(model_name)s` interpolation placeholders to avoid name collisions across concrete subclasses — omitting these will cause a system check error. `[llm-analyzed]`
+- `original_attrs` is populated during `contribute_to_class` from the raw `Meta` class. If a developer programmatically modifies `_meta` after class creation (e.g. in tests or dynamic model generation), `original_attrs` will not reflect those changes, causing migrations to serialize stale values. `[llm-analyzed]`
 
 ## Notes from code
 - [NOTE] We can't modify a dictionary's contents while looping
@@ -39,16 +40,21 @@ The `options` domain implements Django's model metadata system — the `Options`
 - [Article](../article/_overview.md)
 - [Bar](../bar/_overview.md)
 - [Base](../base/_overview.md)
+- [Conf](../conf/_overview.md)
+- [Constraints](../constraints/_overview.md)
+- [Contrib](../contrib/_overview.md)
+- [Core](../core/_overview.md)
 - [Custom-permissions](../custom-permissions/_overview.md)
 - [Custom-user](../custom-user/_overview.md)
 - [Customers](../customers/_overview.md)
 - [Data](../data/_overview.md)
+- [Db](../db/_overview.md)
 - [Default-related-name](../default-related-name/_overview.md)
 - [Django](../django/_overview.md)
+- [Django-views](../django-views/_overview.md)
 - [Empty-join](../empty-join/_overview.md)
-- [Expressions](../expressions/_overview.md)
-- [Fields](../fields/_overview.md)
 - [Foo](../foo/_overview.md)
+- [Forms](../forms/_overview.md)
 - [Invalid-models](../invalid-models/_overview.md)
 - [Is-active](../is-active/_overview.md)
 - [Minimal](../minimal/_overview.md)
@@ -61,8 +67,11 @@ The `options` domain implements Django's model metadata system — the `Options`
 - [Publication](../publication/_overview.md)
 - [Query-performing-app](../query-performing-app/_overview.md)
 - [Tablespaces](../tablespaces/_overview.md)
+- [Templates](../templates/_overview.md)
+- [Templatetags](../templatetags/_overview.md)
 - [Tenant](../tenant/_overview.md)
 - [Tests](../tests/_overview.md)
+- [Utils](../utils/_overview.md)
 - [Uuid-pk](../uuid-pk/_overview.md)
 - [Views](../views/_overview.md)
 - [With-custom-email-field](../with-custom-email-field/_overview.md)
